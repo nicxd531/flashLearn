@@ -1,50 +1,40 @@
 import AuthInputField from "@/components/form/AuthInputField";
 
-import { FC, useState } from "react";
+import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import * as yup from "yup";
 import SubmitBtn from "@/components/form/SubmitBtn";
-import PasswordVisibilityIcon from "@/components/ui/PasswordVisibilityIcon";
 import AppLink from "@/components/ui/AppLink";
 import AuthFormContainer from "@/components/form/AuthFormContainer";
 import Form from "@/components/form/Form";
 import colors from "@/constants/Colors";
 
-const signUpValidation = yup.object({
+const lostPasswordSchema = yup.object({
   email: yup
     .string()
     .trim("Name is missing")
     .email("Invalid email")
     .required("email is required"),
-  password: yup
-    .string()
-    .trim("password is missing")
-    .min(8, "password is too short")
-
-    .required("password is required"),
 });
 
 interface Props {}
 const initialValues = {
   email: "",
-  password: "",
 };
 
-const SignIn: FC<Props> = (props) => {
-  const [secureEntry, setSecureEntry] = useState(true);
-
-  const togglePasswordView = () => {
-    setSecureEntry(!secureEntry);
-  };
+const LostPassword: FC<Props> = (props) => {
   return (
     <Form
       onSubmit={(values) => {
         console.log({ values });
       }}
       initialValues={initialValues}
-      validationSchema={signUpValidation}
+      validationSchema={lostPasswordSchema}
     >
-      <AuthFormContainer heading="welcome BAck!">
+      <AuthFormContainer
+        heading="Forget Password!"
+        subHeading="did you forget your password, don't worry we will help you get back in"
+      >
         <View style={styles.formContainer}>
           <AuthInputField
             name="email"
@@ -53,20 +43,10 @@ const SignIn: FC<Props> = (props) => {
             keyboardType="email-address"
             containerStyle={styles.marginBottom}
           />
-          <AuthInputField
-            name="password"
-            placeholder="********"
-            label="Password"
-            autoCapitalize="none"
-            secureTextEntry={secureEntry}
-            containerStyle={styles.marginBottom}
-            rightIcon={<PasswordVisibilityIcon privateIcon={secureEntry} />}
-            onRightIconPress={togglePasswordView}
-          />
-          <SubmitBtn title="Sign In" />
+          <SubmitBtn title="Sign link" />
           <View style={styles.linkConainer}>
-            <AppLink link="/LostPassword" title="I lost my password" />
-            <AppLink link="/Signup" title="Sign UP" />
+            <AppLink link="/Login" title="Log in" />
+            <AppLink link="Signup" title="Sign UP" />
           </View>
         </View>
       </AuthFormContainer>
@@ -96,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignIn;
+export default LostPassword;

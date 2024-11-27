@@ -15,6 +15,22 @@ const Layout: FC<Props> = (props) => {
         name="IntroPage"
         options={{ headerShown: false, animation: "fade" }}
       />
+      <Stack.Screen
+        name="Login"
+        options={{ headerShown: false, animation: "fade" }}
+      />
+      <Stack.Screen
+        name="Signup"
+        options={{ headerShown: false, animation: "fade" }}
+      />
+      <Stack.Screen
+        name="Verification"
+        options={{ headerShown: false, animation: "fade" }}
+      />
+      <Stack.Screen
+        name="LostPassword"
+        options={{ headerShown: false, animation: "fade" }}
+      />
     </Stack>
   );
 };

@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 36,
-    fontWeight: "900",
+    fontWeight: "700",
     textTransform: "uppercase",
-    color: "white",
+    color: "black",
   },
   buttons: {
     flexDirection: "row",
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
   },
   subHeading: {
     fontSize: 18,
-    fontWeight: "900",
+    fontWeight: "700",
     textTransform: "uppercase",
-    color: "white",
+    color: "black",
     width: "70%",
   },
 });

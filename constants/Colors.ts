@@ -1,19 +1,27 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+const PRIMARY = "#3323A8"; // Main vibrant theme color
+const SECONDARY = "#7834A5"; // A complementary shade for accents
+const BACKGROUND = "#9B3AA1"; // Gradient-inspired background for modern styling
+const CONTRAST = "#FFFFFF"; // Clean white for high-contrast text
+const INACTIVE_CONTRAST = "rgba(255, 255, 255, 0.5)"; // Subtle for inactive items
+const SUCCESS = "#4CAF50"; // Bright green to signify success notifications
+const ERROR = "#FF3E4D"; // Vibrant red for warnings or errors
+const DARK = "#2D23A9"; // Deep and rich, for dark-mode text or accents
+const PINK = "#E056A7"; // Vibrant pink from the gradient
+const GRAY = "#2D23AA"; // Neutral tone for inactive or secondary elements
+const LIGHT_GRAY = "#A83EA0"; // Lighter shade for subtle details
 
-export default {
-  light: {
-    text: '#000',
-    background: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#fff',
-    background: '#000',
-    tint: tintColorDark,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark,
-  },
+const colors = {
+  PRIMARY,
+  SECONDARY,
+  BACKGROUND,
+  CONTRAST,
+  INACTIVE_CONTRAST,
+  SUCCESS,
+  ERROR,
+  DARK,
+  PINK, // Added pink for representation
+  GRAY,
+  LIGHT_GRAY,
 };
+
+export default colors;

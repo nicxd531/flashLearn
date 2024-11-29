@@ -1,6 +1,7 @@
 import { Link, RelativePathString } from "expo-router";
 import { FC } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   title: string;
@@ -9,13 +10,13 @@ interface Props {
 }
 
 const AppLink: FC<Props> = ({ title, onPress, link }) => {
+  const navigation = useNavigation();
+
   return (
     <Pressable>
-      <Link href={link as RelativePathString}>
-        <Text style={styles.title} onPress={onPress}>
-          {title}
-        </Text>
-      </Link>
+      <Text style={styles.title} onPress={onPress}>
+        {title}
+      </Text>
     </Pressable>
   );
 };

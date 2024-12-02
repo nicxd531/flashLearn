@@ -1,6 +1,14 @@
+import colors from "@/constants/Colors";
 import { Redirect } from "expo-router";
 import { FC, useEffect, useState } from "react";
-import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 interface Props {}
 
@@ -24,7 +32,10 @@ const index: FC<Props> = (props) => {
           style={{ width: 150, height: 150 }}
           source={require("../../assets/images/appicon.png")}
         />
-        <Text style={styles.text}>FLASH LEARN</Text>
+        <View>
+          <Text style={styles.subText}>Welcome to FlashLearn</Text>
+          <ActivityIndicator size="large" color={colors.PRIMARY} />
+        </View>
       </View>
     </View>
   );
@@ -59,6 +70,11 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     fontSize: 40,
+  },
+  subText: {
+    fontSize: 24,
+    marginBottom: 20,
+    fontWeight: "bold",
   },
 });
 

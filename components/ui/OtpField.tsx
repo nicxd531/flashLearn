@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     borderColor: colors.SECONDARY,
     borderWidth: 2,
     textAlign: "center",
-    color: colors.CONTRAST,
+    color: "black",
     fontSize: 18,
     fontWeight: "bold",
     lineHeight: 0,

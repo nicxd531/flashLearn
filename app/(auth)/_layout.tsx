@@ -15,17 +15,18 @@ interface Props {}
 const Layout: FC<Props> = (props) => {
   const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator
-      initialRouteName="SplashScreen"
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="SplashScreen" component={SplashScreen} />
-      <Stack.Screen name="IntroPage" component={IntroPage} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="Verification" component={Verification} />
-      <Stack.Screen name="LostPassword" component={LostPassword} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="IntroPage"
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="IntroPage" component={IntroPage} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="LostPassword" component={LostPassword} />
+        <Stack.Screen name="Verification" component={Verification} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

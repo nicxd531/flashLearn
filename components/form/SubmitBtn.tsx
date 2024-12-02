@@ -9,7 +9,13 @@ interface Props {
 
 const SubmitBtn: FC<Props> = (props) => {
   const { handleSubmit } = useFormikContext();
-  return <AppButton onPress={() => handleSubmit()} title={props.title} />;
+  
+  const submit =()=>{
+    handleSubmit()
+
+
+  }
+  return <AppButton onPress={() =>submit() } title={props.title} />;
 };
 
 const styles = StyleSheet.create({

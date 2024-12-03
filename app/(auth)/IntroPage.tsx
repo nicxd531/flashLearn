@@ -2,75 +2,96 @@ import colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { Link } from "expo-router";
 import { FC } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import {
+  Dimensions,
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import tw from "twrnc";
 
-interface Props {}
+interface Props {
+  navigation: any;
+}
 
-const IntroPage: FC<Props> = (props) => {
+const IntroPage: FC<Props> = ({ navigation }) => {
   return (
     <View style={[styles.container]}>
+      <StatusBar barStyle="light-content" hidden={true} translucent={true} />
       <Image
         style={styles.image}
-        source={require("../../assets/images/auth-page.jpg")}
+        source={require("../../assets/images/IntroPage.jpg")}
       />
-      <View style={{ marginTop: 80, padding: 20 }}>
-        <Text style={[styles.header, { width: "95%" }]}>
-          Welcome to FlashLearn 📚
-        </Text>
-        <Text style={styles.subHeading}>
-          Your personalized learning companion!
-        </Text>
-      </View>
-      <View
-        style={{
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          style={{ width: "100%", height: 300 }}
-          source={require("../../assets/images/intropageGirl.png")}
-        />
-      </View>
+      <View style={styles.overlay} />
+      <View style={styles.halfScreen}>
+        <View style={{ marginTop: 80, padding: 20, alignItems: "center" }}>
+          <Text style={[styles.header, { width: "95%" }, tw`font-bold`]}>
+            Welcome to FlashLearn 📚
+          </Text>
+          <Text style={styles.subHeading}>
+            Your personalized learning companion!
+          </Text>
+        </View>
 
-      <View style={styles.buttons}>
-        <Link
-          href={"/Login"}
-          style={[
-            defaultStyles.pillButton,
-            { flex: 1, backgroundColor: colors.PINK },
-          ]}
-          asChild
-        >
-          <TouchableOpacity>
-            <Text style={{ color: "white", fontSize: 22, fontWeight: "500" }}>
-              Log in
-            </Text>
-          </TouchableOpacity>
-        </Link>
-        <Link
-          href={"/Signup"}
-          style={[
-            defaultStyles.pillButton,
-            { flex: 1, backgroundColor: colors.SECONDARY },
-          ]}
-          asChild
-        >
-          <TouchableOpacity>
-            <Text style={{ fontSize: 22, fontWeight: "500" }}>Sign up</Text>
-          </TouchableOpacity>
-        </Link>
+        <View style={styles.buttonsContainer}>
+          <Link
+            href={"/Login"}
+            style={[
+              defaultStyles.pillButton,
+              { flex: 1, backgroundColor: colors.PRIMARY, marginBottom: 10 },
+            ]}
+            asChild
+          >
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 22,
+                  fontWeight: "500",
+                }}
+              >
+                Log in
+              </Text>
+            </TouchableOpacity>
+          </Link>
+          <Link
+            href={"/Signup"}
+            style={[
+              defaultStyles.pillButton,
+              { flex: 1, backgroundColor: "#fff", height: 60 },
+            ]}
+            asChild
+          >
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("SignUp")}
+            >
+              <Text style={{ fontSize: 22, fontWeight: "500" }}>Sign up</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  halfScreen: {
+    position: "absolute",
+    top: Dimensions.get("window").height / 2, // Starts from half the screen
+    width: "100%", // Full width of the screen
+    alignItems: "center", // Center content horizontally
+    paddingVertical: 20, // Add some padding vertically
+  },
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    overflow: "hidden",
   },
   image: {
     width: "100%",
@@ -78,26 +99,28 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
   },
-  header: {
-    fontSize: 36,
-    fontWeight: "700",
-    textTransform: "uppercase",
-    color: "black",
+  overlay: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 20,
-    marginBottom: 60,
-    paddingHorizontal: 20,
+  header: {
+    fontSize: 35,
+    color: "#fff",
+  },
+  buttonsContainer: {
+    padding: 12,
+    width: "100%",
+    height: 150,
+    justifyContent: "space-between",
   },
   subHeading: {
-    fontSize: 18,
-    fontWeight: "700",
-    textTransform: "uppercase",
-    color: "black",
-    width: "70%",
+    fontSize: 20,
+    color: "#fff",
   },
+  button: {},
 });
 
 export default IntroPage;

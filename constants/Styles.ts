@@ -14,9 +14,14 @@ export const defaultStyles = StyleSheet.create({
   pillButton: {
     padding: 10,
     height: 60,
-    borderRadius: 40,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000", // Shadow for depth
+    shadowOffset: { width: 0, height: 5 }, // Position of shadow
+    shadowOpacity: 0.3, // Shadow transparency
+    shadowRadius: 8, // Blurriness of shadow
+    elevation: 10, // Shadow on Android
   },
   textLink: {
     color: colors.PRIMARY,

@@ -6,11 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 interface Props {
   title: string;
   onPress?(): void;
-  link: string;
+  
 }
 
-const AppLink: FC<Props> = ({ title, onPress, link }) => {
-  const navigation = useNavigation();
+const AppLink: FC<Props> = ({ title, onPress }) => {
+ 
 
   return (
     <Pressable>

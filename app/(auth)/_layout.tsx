@@ -16,15 +16,14 @@ const Layout: FC<Props> = (props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SplashScreen"
+        initialRouteName="IntroPage"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="IntroPage" component={IntroPage} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="Verification" component={Verification} />
         <Stack.Screen name="LostPassword" component={LostPassword} />
+        <Stack.Screen name="Verification" component={Verification} />
       </Stack.Navigator>
     </NavigationContainer>
   );

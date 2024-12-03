@@ -48,9 +48,9 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const router = useRouter();
   return (
-    <Stack initialRouteName="index">
+    <Stack initialRouteName="Index">
       <Stack.Screen
-        name="index"
+        name="Index"
         options={{ headerShown: false, animation: "fade" }}
       />
       <Stack.Screen

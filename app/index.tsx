@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 interface Props {}
 
-const index: FC<Props> = (props) => {
+const Index: FC<Props> = (props) => {
   return <Redirect href={"/(auth)/SplashScreen"} />;
 };
 
@@ -12,4 +12,4 @@ const styles = StyleSheet.create({
   container: {},
 });
 
-export default index;
+export default Index;

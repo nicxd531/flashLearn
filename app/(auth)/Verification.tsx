@@ -21,7 +21,7 @@ interface Props {
 const otpFields = new Array(6).fill("");
 const Verification: FC<Props> = ({ route, navigation }) => {
   const { userInfo } = route.params;
-  console.log(userInfo);
+  console.log(userInfo             );
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 

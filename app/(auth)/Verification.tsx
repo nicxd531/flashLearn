@@ -13,10 +13,15 @@ import OtpField from "@/components/ui/OtpField";
 import AppButton from "@/components/ui/AppButton";
 import tw from "twrnc";
 
-interface Props {}
+interface Props {
+  route: any;
+  navigation: any;
+}
 
 const otpFields = new Array(6).fill("");
-const Verification: FC<Props> = (props) => {
+const Verification: FC<Props> = ({ route, navigation }) => {
+  const { userInfo } = route.params;
+  console.log(userInfo);
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
@@ -78,7 +83,7 @@ const Verification: FC<Props> = (props) => {
           </View>
           <View style={tw`mt-25`}></View>
           <AppButton title="Submit" />
-          <View style={styles.linkConainer}>
+          <View style={styles.linkContainer}>
             <AppLink title="Re-send OTP" />
           </View>
         </AuthFormContainer>
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  linkConainer: {
+  linkContainer: {
     width: "100%",
     marginTop: 20,
     alignItems: "flex-end",

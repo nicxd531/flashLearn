@@ -15,6 +15,10 @@ import AuthFormContainer from "@/components/form/AuthFormContainer";
 import Form from "@/components/form/Form";
 import colors from "@/constants/Colors";
 import tw from "twrnc";
+import { FormikHelpers } from "formik";
+import axios from "axios";
+import client from "@/components/api/client";
+import { useNavigation } from "@react-navigation/native";
 
 const signUpValidation = yup.object({
   name: yup
@@ -39,8 +43,15 @@ const signUpValidation = yup.object({
 });
 
 interface Props {
-  navigation:any
+  navigation: any;
 }
+
+export interface NewUser {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const initialValues = {
   name: "",
   email: "",
@@ -53,6 +64,22 @@ const SignUp: FC<Props> = ({ navigation }) => {
   const togglePasswordView = () => {
     setSecureEntry(!secureEntry);
   };
+  const handleSubmit = async (
+    values: NewUser,
+    action: FormikHelpers<NewUser>
+  ) => {
+    try {
+      const { data } = await client.post("/auth/create", {
+        ...values,
+      });
+      navigation.navigate("Verification", {
+        userInfo: data.user,
+      });
+    } catch (err) {
+      console.log("sign up err", err);
+    }
+    // send information to api
+  };
   return (
     <View style={{ flex: 1 }}>
       <Image
@@ -61,15 +88,11 @@ const SignUp: FC<Props> = ({ navigation }) => {
       />
       <View style={styles.overlay} />
       <Form
-        onSubmit={(values) => {
-          console.log({ values });
-        }}
+        onSubmit={handleSubmit}
         initialValues={initialValues}
         validationSchema={signUpValidation}
       >
-        <AuthFormContainer
-          heading="New Account"
-        >
+        <AuthFormContainer heading="New Account">
           <View style={styles.formContainer}>
             <AuthInputField
               name="name"
@@ -99,7 +122,7 @@ const SignUp: FC<Props> = ({ navigation }) => {
             />
             <View style={tw`mt-12`}>
               <SubmitBtn title="Sign Up" />
-              <View style={[styles.linkConainer, tw`mt-2`]}>
+              <View style={[styles.linkContainer, tw`mt-2`]}>
                 <Text style={{ color: "grey" }}>Already have an account?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                   <Text style={{ color: "black" }}> Sign In</Text>
@@ -128,7 +151,7 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 20,
   },
-  linkConainer: {
+  linkContainer: {
     flexDirection: "row",
     textAlign: "center",
     alignItems: "center",

@@ -17,6 +17,7 @@
     "@react-native-community/blur": "^4.4.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
+    "axios": "^1.7.9",
     "expo": "~52.0.11",
     "expo-dev-client": "~5.0.6",
     "expo-font": "~13.0.1",

@@ -6,12 +6,14 @@ import {
   View,
   Image,
   Text,
+  KeyboardAvoidingView,
 } from "react-native";
 import AppLink from "@/components/ui/AppLink";
 import AuthFormContainer from "@/components/form/AuthFormContainer";
 import OtpField from "@/components/ui/OtpField";
 import AppButton from "@/components/ui/AppButton";
 import tw from "twrnc";
+import client from "@/components/api/client";
 
 interface Props {
   route: any;
@@ -21,7 +23,7 @@ interface Props {
 const otpFields = new Array(6).fill("");
 const Verification: FC<Props> = ({ route, navigation }) => {
   const { userInfo } = route.params;
-  console.log(userInfo             );
+  console.log(userInfo);
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
@@ -44,25 +46,49 @@ const Verification: FC<Props> = ({ route, navigation }) => {
       setOtp({ ...newOtp });
     }
   };
+  const isValidOtp = otp.every((value) => {
+    return value.trim();
+  });
+  const handleSubmit = () => {
+    if (!isValidOtp) return;
+    try {
+      const { data } = client.post("/auth/verify-email", {
+        userId: userInfo.id,
+        token: otp.join(""),
+      });
+      console.log(data);
+    } catch (err) {
+      console.log("error inside verification", err);
+    }
+  };
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView style={{ flex: 1, height: "100%" }}>
       <Image
         style={styles.image}
         source={require("../../assets/images/IntroPage.jpg")}
       />
       <View style={styles.overlay} />
-      <View>
+      <View style={{ height: "100%" }}>
         <AuthFormContainer heading="">
-          <View style={tw`w-100 text-center items-center justify-center mb-4`}>
+          <View style={tw`w-100 text-center items-center justify-center`}>
             <Image
               style={styles.png}
               source={require("../../assets/images/otpPng.png")}
             />
-            <Text style={tw`font-bold text-4xl`}> Verification</Text>
-            <Text style={tw` text-2xl`}> check your email</Text>
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Text style={tw`font-bold text-4xl`}> Verification</Text>
+              <Text style={tw` text-2xl`}> check your registered email</Text>
+            </View>
           </View>
           <View style={styles.inputContainer}>
             {otpFields.map((_, index) => {
@@ -88,7 +114,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
           </View>
         </AuthFormContainer>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -119,8 +145,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
   },
   png: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
   },
 });
 

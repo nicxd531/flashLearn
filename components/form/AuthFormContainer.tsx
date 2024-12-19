@@ -25,28 +25,40 @@ const AuthFormContainer: FC<Props> = ({ children, heading, subHeading }) => {
     };
   });
 
-  let emoji 
-  switch(heading){
-    case "Welcome Back" :
-      emoji=<View style={styles.roundedView}>
-      <Text style={styles.emoji}>✋</Text> {/* Hand emoji */}
-    </View>;
-    break;
-    case "New Account" :
-      emoji=<View style={styles.roundedView}>
-      {/* Camera Emoji */}
-      <Text style={styles.emoji}>📷</Text>
-      {/* Text Below the Emoji */}
-      {/* <Text style={styles.text}>Upload</Text> */}
-    </View>;
-    break;
-    case "Forget Password!" :
-      emoji=<View style={styles.roundedView}>
-      <Text style={styles.emoji}>😢</Text> {/* Hand emoji */}
-    </View>;
-    break;
-
-
+  let emoji;
+  switch (heading) {
+    case "Welcome Back":
+      emoji = (
+        <View style={styles.headerContainer}>
+          <Text style={styles.heading}>{heading}</Text>
+          <View style={styles.roundedView}>
+            <Text style={styles.emoji}>✋</Text> {/* Hand emoji */}
+          </View>
+        </View>
+      );
+      break;
+    case "New Account":
+      emoji = (
+        <View style={styles.headerContainer}>
+          <Text style={styles.heading}>{heading}</Text>
+          <View style={styles.roundedView}>
+            <Text style={styles.emoji}>📷</Text>
+          </View>
+        </View>
+      );
+      break;
+    case "Forget Password!":
+      emoji = (
+        <View style={styles.headerContainer}>
+          <Text style={styles.heading}>{heading}</Text>
+          <View style={styles.roundedView}>
+            <Text style={styles.emoji}>😢</Text> {/* Hand emoji */}
+          </View>
+        </View>
+      );
+      break;
+    default:
+      emoji = "";
   }
   useEffect(() => {
     // Animate the view to slide in from the bottom
@@ -54,10 +66,7 @@ const AuthFormContainer: FC<Props> = ({ children, heading, subHeading }) => {
   }, [translateY]);
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.heading}>{heading}</Text>
-        {emoji}
-      </View>
+      {emoji}
       {children}
     </Animated.View>
   );

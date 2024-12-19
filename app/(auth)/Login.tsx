@@ -93,7 +93,7 @@ const SignIn: FC<Props> = ({ navigation }) => {
               />
               <AuthInputField
                 name="password"
-                placeholder="Eassword"
+                placeholder="password"
                 label="Password"
                 autoCapitalize="none"
                 secureTextEntry={secureEntry}
@@ -111,8 +111,8 @@ const SignIn: FC<Props> = ({ navigation }) => {
             </View>
             <View style={tw`mt-30`}>
               <SubmitBtn title="Sign In" />
-              <View style={[styles.linkConainer, tw`mt-2`]}>
-                <Text style={{ color: "grey" }}>Don't have an accoun?</Text>
+              <View style={[styles.linkContainer, tw`mt-2`]}>
+                <Text style={{ color: "grey" }}>Don't have an account?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
                   <Text style={{ color: "black" }}> Get Started</Text>
                 </TouchableOpacity>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 20,
   },
-  linkConainer: {
+  linkContainer: {
     flexDirection: "row",
     textAlign: "center",
     alignItems: "center",

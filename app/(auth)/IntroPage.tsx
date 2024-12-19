@@ -28,8 +28,14 @@ const IntroPage: FC<Props> = ({ navigation }) => {
       />
       <View style={styles.overlay} />
       <View style={styles.halfScreen}>
-        <View style={{ marginTop: 80, padding: 20, alignItems: "center" }}>
-          <Text style={[styles.header, { width: "95%" }, tw`font-bold`]}>
+        <View
+          style={{
+            marginTop: 80,
+            alignItems: "center",
+            padding: 20,
+          }}
+        >
+          <Text style={[styles.header, { width: "75%" }, tw`font-bold`]}>
             Welcome to FlashLearn 📚
           </Text>
           <Text style={styles.subHeading}>
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
   },
   header: {
-    fontSize: 35,
+    fontSize: 30,
     color: "#fff",
   },
   buttonsContainer: {

@@ -16,7 +16,7 @@ import Animated, {
   withSequence,
   withSpring,
   withTiming,
-  FadeInDown
+  FadeInDown,
 } from "react-native-reanimated";
 import AppInput from "../ui/AppInput";
 import colors from "@/constants/Colors";
@@ -31,7 +31,7 @@ interface Props {
   containerStyle?: StyleProp<ViewStyle>;
   rightIcon?: ReactNode;
   onRightIconPress?(): void;
-  delay:number | 500
+  delay: number | 500;
 }
 
 const AuthInputField: FC<Props> = (props) => {
@@ -51,7 +51,7 @@ const AuthInputField: FC<Props> = (props) => {
     name,
     rightIcon,
     onRightIconPress,
-    delay
+    delay,
   } = props;
   const errorMsg = touched[name] && errors[name] ? errors[name] : "";
 
@@ -75,9 +75,12 @@ const AuthInputField: FC<Props> = (props) => {
   useEffect(() => {
     if (errorMsg) shakeUI();
   }, [errorMsg]);
-  console.log({errorMsg})
+
   return (
-    <Animated.View entering={FadeInDown.delay(500).duration(1500).springify()} style={[containerStyle, inputStyle]}>
+    <Animated.View
+      entering={FadeInDown.delay(500).duration(1500).springify()}
+      style={[containerStyle, inputStyle]}
+    >
       <View style={styles.labelContainer}>
         <Text style={styles.errorMsg}>{errorMsg}</Text>
       </View>

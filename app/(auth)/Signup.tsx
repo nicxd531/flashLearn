@@ -6,6 +6,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as yup from "yup";
 import SubmitBtn from "@/components/form/SubmitBtn";
@@ -81,7 +82,7 @@ const SignUp: FC<Props> = ({ navigation }) => {
     // send information to api
   };
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <Image
         style={styles.image}
         source={require("../../assets/images/IntroPage.jpg")}
@@ -132,7 +133,7 @@ const SignUp: FC<Props> = ({ navigation }) => {
           </View>
         </AuthFormContainer>
       </Form>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

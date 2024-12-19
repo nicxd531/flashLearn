@@ -25,6 +25,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
   const { userInfo } = route.params;
   console.log(userInfo);
   const [otp, setOtp] = useState([...otpFields]);
+  console.log(otp);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const inputRef = useRef<TextInput>(null);
@@ -43,7 +44,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
     if (value.length === 6) {
       Keyboard.dismiss();
       const newOtp = value.split("");
-      setOtp({ ...newOtp });
+      setOtp([...newOtp]);
     }
   };
   const isValidOtp = otp.every((value) => {
@@ -73,7 +74,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
       <View style={styles.overlay} />
       <View style={{ height: "100%" }}>
         <AuthFormContainer heading="">
-          <View style={tw`w-100 text-center items-center justify-center`}>
+          <View style={tw`w-100  items-center justify-center`}>
             <Image
               style={styles.png}
               source={require("../../assets/images/otpPng.png")}

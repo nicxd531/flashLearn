@@ -1,36 +1,64 @@
-import { NavigationContainer } from "@react-navigation/native";
+import React, { FC, useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
+import { useSelector } from "react-redux";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { FC } from "react";
-import { StyleSheet, View } from "react-native";
-import LostPassword from "./LostPassword";
-import Verification from "./Verification";
-import SignUp from "./Signup";
-import Login from "./Login";
+import { useRouter } from "expo-router";
+import HomeLayout from "../(tabs)/HomeLayout";
 import IntroPage from "./IntroPage";
-import SplashScreen from "./SplashScreen";
+import Login from "./Login";
 
-interface Props {}
+import colors from "@/constants/Colors";
+import { getAuthState } from "@/utils/store/auth";
+import SignUp from "./Signup";
 
-const Layout: FC<Props> = (props) => {
+interface Props {
+  navigation?: any;
+  router?: any;
+}
+
+const AuthLayout: FC<Props> = (props) => {
   const Stack = createNativeStackNavigator();
+  const { loggedIn, loading } = useSelector(getAuthState);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (loading) return;
+    if (loggedIn) {
+      navigation.navigate("HomeMain");
+    } else if (!loggedIn) {
+      navigation.navigate("IntroPage");
+    }
+  });
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={colors.PRIMARY} />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="IntroPage"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="IntroPage" component={IntroPage} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="LostPassword" component={LostPassword} />
-        <Stack.Screen name="Verification" component={Verification} />
+        {!loggedIn ? (
+          <>
+            <Stack.Screen name="IntroPage" component={IntroPage} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="HomeLayout" component={HomeLayout} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {},
-});
-
-export default Layout;
+export default AuthLayout;

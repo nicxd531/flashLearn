@@ -27,45 +27,70 @@ const AuthFormContainer: FC<Props> = ({ children, heading, subHeading }) => {
 
   let emoji;
   switch (heading) {
-    case "Welcome Back":
+    case "Please, Log In.":
       emoji = (
         <View style={styles.headerContainer}>
-          <Text style={styles.heading}>{heading}</Text>
-          <View style={styles.roundedView}>
-            <Text style={styles.emoji}>✋</Text> {/* Hand emoji */}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.subHeading}>{subHeading}</Text>
+            <View>
+              <Text style={styles.emoji}>👌</Text>
+            </View>
           </View>
+          <Text style={styles.heading}>{heading}</Text>
         </View>
       );
       break;
-    case "New Account":
+    case "Let's Get Started":
       emoji = (
         <View style={styles.headerContainer}>
-          <Text style={styles.heading}>{heading}</Text>
-          <View style={styles.roundedView}>
-            <Text style={styles.emoji}>📷</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={styles.subHeading}>{heading}</Text>
+            <Text style={styles.emoji}>📸</Text>
           </View>
+          <Text style={styles.heading}>{heading}</Text>
         </View>
       );
       break;
     case "Forget Password!":
       emoji = (
         <View style={styles.headerContainer}>
-          <Text style={styles.heading}>{heading}</Text>
-          <View style={styles.roundedView}>
-            <Text style={styles.emoji}>😢</Text> {/* Hand emoji */}
+          <View>
+            <Text style={styles.heading}>{heading}</Text>
+            <View style={styles.roundedView}>
+              <Text style={styles.emoji}>😢</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={styles.subHeading}>{heading}</Text>
           </View>
         </View>
       );
       break;
     default:
-      emoji = "";
+      emoji = (
+        <View>
+          <Text>{""}</Text>
+        </View>
+      );
   }
   useEffect(() => {
     // Animate the view to slide in from the bottom
     translateY.value = withTiming(height * 0.3, { duration: 500 }); // Cover 80% of the screen height
   }, [translateY]);
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
+    <Animated.View style={[styles.container]}>
       {emoji}
       {children}
     </Animated.View>
@@ -74,37 +99,24 @@ const AuthFormContainer: FC<Props> = ({ children, heading, subHeading }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
-    overflow: "hidden",
-    width: "100%",
-    height: height * 0.6, // Set height to 80% of the screen
-    backgroundColor: "white", // White background
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 20,
-    elevation: 5, // Add some elevation/shadow for Android
-    shadowColor: "#000", // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    marginTop: 50,
+    width: "80%",
   },
   headerContainer: {
     width: "100%",
     marginBottom: 20,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+    textAlign: "center",
   },
   heading: {
-    color: "black",
+    color: "white",
     fontSize: 45,
     fontWeight: "bold",
     paddingVertical: 5,
-    width: "60%",
   },
-  subHeading: { color: colors.CONTRAST, fontSize: 16 },
+  subHeading: { color: colors.CONTRAST, fontSize: 18, marginBottom: 10 },
   image: {
     width: 100,
     height: 100,
@@ -123,7 +135,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   emoji: {
-    fontSize: 30, // Size of the emoji
+    fontSize: 20, // Size of the emoji
   },
   text: {
     fontSize: 14,

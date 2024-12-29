@@ -1,21 +1,33 @@
 import colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { FC } from "react";
-import { Pressable, StyleSheet, Text, View,TouchableOpacity } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { string } from "yup";
 
 interface Props {
   title: string;
   onPress?(): void;
+  busy?: boolean;
 }
 
-const AppButton: FC<Props> = ({ onPress, title }) => {
+const AppButton: FC<Props> = ({ onPress, title, busy }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, defaultStyles.pillButton]}
     >
-      <Text style={styles.title}>{title}</Text>
+      {!busy ? (
+        <Text style={styles.title}>{title}</Text>
+      ) : (
+        <ActivityIndicator size="large" color={colors.SECONDARY} />
+      )}
     </TouchableOpacity>
   );
 };
@@ -37,7 +49,7 @@ const styles = StyleSheet.create({
   title: {
     color: "black",
     fontSize: 20,
-    fontWeight:"bold"
+    fontWeight: "bold",
   },
 });
 

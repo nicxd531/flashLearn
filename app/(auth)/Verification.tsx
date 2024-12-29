@@ -7,6 +7,7 @@ import {
   Image,
   Text,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import AppLink from "@/components/ui/AppLink";
 import AuthFormContainer from "@/components/form/AuthFormContainer";
@@ -14,6 +15,10 @@ import OtpField from "@/components/ui/OtpField";
 import AppButton from "@/components/ui/AppButton";
 import tw from "twrnc";
 import client from "@/components/api/client";
+import axios from "axios";
+import colors from "@/constants/Colors";
+import { OtpInput } from "react-native-otp-entry";
+import Toast from "react-native-toast-message";
 
 interface Props {
   route: any;
@@ -23,11 +28,12 @@ interface Props {
 const otpFields = new Array(6).fill("");
 const Verification: FC<Props> = ({ route, navigation }) => {
   const { userInfo } = route.params;
-  console.log(userInfo);
-  const [otp, setOtp] = useState([...otpFields]);
-  console.log(otp);
-  const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
+  const [otp, setOtp] = useState([...otpFields]);
+  const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [countDown, setCountDown] = useState(60);
+  const [canSendNewOtpRequest, setCanSendNewOtpRequest] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const handleChange = (value: string, index: number) => {
     const newOtp = [...otp];
@@ -40,6 +46,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
     }
     setOtp([...newOtp]);
   };
+  console.log({ otp });
   const handlePaste = (value: string) => {
     if (value.length === 6) {
       Keyboard.dismiss();
@@ -50,70 +57,144 @@ const Verification: FC<Props> = ({ route, navigation }) => {
   const isValidOtp = otp.every((value) => {
     return value.trim();
   });
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setSubmitting(true);
     if (!isValidOtp) return;
     try {
-      const { data } = client.post("/auth/verify-email", {
+      // Await the response from the post request
+      const response = await client.post("/auth/verify-email", {
         userId: userInfo.id,
         token: otp.join(""),
       });
-      console.log(data);
-    } catch (err) {
-      console.log("error inside verification", err);
+
+      // Now you can destructure the data safely
+      const { data } = response;
+
+      // You can now use the data as needed
+      console.log(data); // Process the data as needed
+
+      Toast.show({
+        text1: "success",
+        text2: "Verification Successful 🎉🎊",
+        type: "success", // can be 'success', 'error', 'info'
+        position: "top", // 'top', 'bottom', 'center'
+        visibilityTime: 4000, // duration in milliseconds
+        autoHide: true, // auto hide after visibilityTime
+      });
+      // navigate to sign in
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log({ error });
+      Toast.show({
+        text1: "Error",
+        text2: "verification error ❌",
+        type: "error", // can be 'success', 'error', 'info'
+        position: "top", // 'top', 'bottom', 'center'
+        visibilityTime: 4000, // duration in milliseconds
+        autoHide: true, // auto hide after visibilityTime
+      });
+      setSubmitting(false);
+    }
+    setSubmitting(false);
+  };
+
+  const requestForNewOtp = async () => {
+    setCountDown(60);
+    setCanSendNewOtpRequest(false);
+    try {
+      await client.post("/auth/re-verify-email", {
+        userId: userInfo.id,
+      });
+    } catch (error) {
+      console.log("requesting for new otp", error);
     }
   };
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
+  useEffect(() => {
+    if (canSendNewOtpRequest) return;
+
+    const intervalId = setInterval(() => {
+      setCountDown((oldCountDown) => {
+        if (oldCountDown <= 0) {
+          setCanSendNewOtpRequest(true);
+          clearInterval(intervalId);
+
+          return 0;
+        }
+        return oldCountDown - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [canSendNewOtpRequest]);
+
   return (
-    <KeyboardAvoidingView style={{ flex: 1, height: "100%" }}>
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/IntroPage.jpg")}
-      />
-      <View style={styles.overlay} />
-      <View style={{ height: "100%" }}>
-        <AuthFormContainer heading="">
-          <View style={tw`w-100  items-center justify-center`}>
-            <Image
-              style={styles.png}
-              source={require("../../assets/images/otpPng.png")}
-            />
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Text style={tw`font-bold text-4xl`}> Verification</Text>
-              <Text style={tw` text-2xl`}> check your registered email</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={{ flex: 1, height: "100%" }}>
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/IntroPage.jpg")}
+        />
+        <View style={styles.overlay} />
+        <View style={{ height: "100%" }}>
+          <AuthFormContainer heading="">
+            <View style={tw`w-100  items-center justify-center`}>
+              <Image
+                style={styles.png}
+                source={require("../../assets/images/otpPng.png")}
+              />
+              <View
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={tw`font-bold text-4xl`}> Verification</Text>
+                <Text style={tw` text-2xl`}> check your registered email</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.inputContainer}>
-            {otpFields.map((_, index) => {
-              return (
-                <OtpField
-                  ref={activeOtpIndex === index ? inputRef : null}
-                  placeholder="*"
-                  key={index}
-                  onKeyPress={({ nativeEvent }) => {
-                    handleChange(nativeEvent.key, index);
-                  }}
-                  onChangeText={handlePaste}
-                  keyboardType="numeric"
-                  value={otp[index] || ""}
-                />
-              );
-            })}
-          </View>
-          <View style={tw`mt-25`}></View>
-          <AppButton title="Submit" />
-          <View style={styles.linkContainer}>
-            <AppLink title="Re-send OTP" />
-          </View>
-        </AuthFormContainer>
+            <View style={styles.inputContainer}>
+              <OtpInput
+                numberOfDigits={6}
+                onTextChange={handlePaste}
+                focusColor={colors.PRIMARY}
+                focusStickBlinkingDuration={400}
+                disabled={false}
+                type="numeric"
+                theme={{
+                  pinCodeContainerStyle: {
+                    borderColor: "grey",
+                  },
+                }}
+              />
+            </View>
+            <View style={tw`mt-25`}></View>
+            <AppButton
+              busy={submitting}
+              title="Submit"
+              onPress={handleSubmit}
+            />
+            <View style={styles.linkContainer}>
+              {countDown > 0 ? (
+                <Text style={styles.countDown}>{countDown} sec</Text>
+              ) : null}
+              <AppLink
+                active={canSendNewOtpRequest}
+                title="Re-send OTP"
+                onPress={requestForNewOtp}
+              />
+            </View>
+          </AuthFormContainer>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -126,11 +207,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 20,
   },
   linkContainer: {
     width: "100%",
     marginTop: 20,
-    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    flexDirection: "row",
   },
   image: {
     width: "100%",
@@ -149,6 +232,28 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
+  countDown: {
+    color: colors.SECONDARY,
+    marginRight: 7,
+  },
 });
 
 export default Verification;
+
+{
+  /* {otpFields.map((_, index) => {
+                return (
+                  <OtpField
+                    ref={activeOtpIndex === index ? inputRef : null}
+                    placeholder="*"
+                    key={index}
+                    onKeyPress={({ nativeEvent }) => {
+                      handleChange(nativeEvent.key, index);
+                    }}
+                    onChangeText={handlePaste}
+                    keyboardType="numeric"
+                    value={otp[index] || ""}
+                  />
+                );
+              })} */
+}

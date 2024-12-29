@@ -1,4 +1,4 @@
-const PRIMARY = "#3323A8"; // Main vibrant theme color
+const PRIMARY = "#706ad4"; // Main vibrant theme color
 const SECONDARY = "#7834A5"; // A complementary shade for accents
 const BACKGROUND = "#9B3AA1"; // Gradient-inspired background for modern styling
 const CONTRAST = "#FFFFFF"; // Clean white for high-contrast text

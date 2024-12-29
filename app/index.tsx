@@ -1,29 +1,35 @@
 import colors from "@/constants/Colors";
-import { Redirect, useRouter } from "expo-router";
-import { FC, useEffect } from "react";
-import { Image, StatusBar } from "react-native";
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
-import { StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { FC, useEffect } from "react";
+import {
+  Image,
+  StatusBar,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 
 interface Props {}
 
-const index: FC<Props> = (props) => {
-  const router = useRouter();
+const Index: FC<Props> = (props) => {
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Simulate loading or initialization logic
     const timeout = setTimeout(() => {
-      router.replace("/IntroPage"); // Navigate to the main screen or auth flow
+      navigation.navigate("IntroPage"); // Navigate to the main screen or auth flow
     }, 2000); // 2 seconds delay
 
     return () => clearTimeout(timeout); // Cleanup timeout on unmount
-  }, [router]);
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" hidden={true} translucent={true} />
       <Image
         style={[styles.image]}
-        source={require("../assets/images/auth-page.webp")}
+        source={require("../assets/images/IntroPage.jpg")}
       />
       <View style={styles.iconContainer}>
         <Image
@@ -41,40 +47,26 @@ const index: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Full height of the screen
-    marginBottom: 0, // Remove bottom margin
-    paddingBottom: 0, // Remove bottom padding
-    justifyContent: "center", // Center content vertically
-    alignItems: "center", // Center content horizontally
-    position: "relative",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   image: {
-    position: "absolute", // Equivalent to 'absolute' in Tailwind
-    top: 0, // Equivalent to 'inset-0'
-    right: 0, // Equivalent to 'inset-0'
-    bottom: 0, // Equivalent to 'inset-0'
-    left: 0, // Equivalent to 'inset-0'
-    width: "100%", // Equivalent to 'w-full'
-    height: "100%", // Equivalent to 'h-full'
-    resizeMode: "cover", // Equivalent to 'object-cover'
-  },
-  iconContainer: {
+    position: "absolute",
     width: "100%",
     height: "100%",
+    resizeMode: "cover",
+  },
+  iconContainer: {
     justifyContent: "center",
-    flex: 1,
     alignItems: "center",
   },
-  text: {
-    textAlign: "center",
-    fontSize: 40,
-    color: "white",
-  },
   subText: {
-    fontSize: 35,
-    marginBottom: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    color: "#333",
+    marginTop: 10,
   },
 });
 
-export default index;
+export default Index;

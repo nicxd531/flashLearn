@@ -77,29 +77,30 @@ const AuthInputField: FC<Props> = (props) => {
   }, [errorMsg]);
 
   return (
-    <Animated.View
-      entering={FadeInDown.delay(500).duration(1500).springify()}
-      style={[containerStyle, inputStyle]}
-    >
-      <View style={styles.labelContainer}>
-        <Text style={styles.errorMsg}>{errorMsg}</Text>
-      </View>
-      <View>
-        <AppInput
-          placeholder={placeholder}
-          keyboardType={keyboardType}
-          autoCapitalize={autoCapitalize}
-          secureTextEntry={secureTextEntry}
-          onChangeText={handleChange(name)}
-          value={values[name]}
-          onBlur={handleBlur(name)}
-        />
-        {rightIcon ? (
-          <Pressable onPress={onRightIconPress} style={styles.rightIcon}>
-            {rightIcon}
-          </Pressable>
-        ) : null}
-      </View>
+    <Animated.View style={[containerStyle, inputStyle]}>
+      <Animated.View
+        entering={FadeInDown.delay(500).duration(1500).springify()}
+      >
+        <View style={styles.labelContainer}>
+          <Text style={styles.errorMsg}>{errorMsg}</Text>
+        </View>
+        <View>
+          <AppInput
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            autoCapitalize={autoCapitalize}
+            secureTextEntry={secureTextEntry}
+            onChangeText={handleChange(name)}
+            value={values[name]}
+            onBlur={handleBlur(name)}
+          />
+          {rightIcon ? (
+            <Pressable onPress={onRightIconPress} style={styles.rightIcon}>
+              {rightIcon}
+            </Pressable>
+          ) : null}
+        </View>
+      </Animated.View>
     </Animated.View>
   );
 };

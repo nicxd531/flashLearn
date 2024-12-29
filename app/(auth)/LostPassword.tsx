@@ -1,7 +1,13 @@
 import AuthInputField from "@/components/form/AuthInputField";
 
 import { FC } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import * as yup from "yup";
 import SubmitBtn from "@/components/form/SubmitBtn";
 import AppLink from "@/components/ui/AppLink";
@@ -17,6 +23,8 @@ import Animated, {
   withTiming,
   FadeInDown,
 } from "react-native-reanimated";
+import { FormikHelpers } from "formik";
+import client from "@/components/api/client";
 const lostPasswordSchema = yup.object({
   email: yup
     .string()
@@ -28,68 +36,91 @@ const lostPasswordSchema = yup.object({
 interface Props {
   navigation: any;
 }
+interface initialValue {
+  email: string;
+}
 const initialValues = {
   email: "",
 };
 
 const LostPassword: FC<Props> = ({ navigation }) => {
+  const handleSubmit = async (
+    values: initialValue,
+    actions: FormikHelpers<initialValue>
+  ) => {
+    try {
+      actions.setSubmitting(true);
+      const { data } = await client.post("/auth/forget-password", {
+        ...values,
+      });
+      console.log({ data });
+    } catch (err) {
+      console.log("lost password err", err);
+    }
+    actions.setSubmitting(false);
+
+    // send information to api
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/IntroPage.jpg")}
-      />
-      <View style={styles.overlay} />
-      <Form
-        onSubmit={(values) => {
-          console.log({ values });
-        }}
-        initialValues={initialValues}
-        validationSchema={lostPasswordSchema}
-      >
-        <AuthFormContainer
-          heading="Forget Password!"
-          subHeading="did you forget your password, don't worry we will help you get back in"
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={{ flex: 1 }}>
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/IntroPage.jpg")}
+        />
+        <View style={styles.overlay} />
+        <Form
+          onSubmit={handleSubmit}
+          initialValues={initialValues}
+          validationSchema={lostPasswordSchema}
         >
-          <View style={tw`w-100 items-center justify-center`}>
-            <Image
-              style={styles.png}
-              source={require("../../assets/images/forgetPassword.png")}
-            />
-          </View>
-          <View style={styles.formContainer}>
-            <AuthInputField
-              name="email"
-              placeholder="john@gmail.com"
-              label="email"
-              keyboardType="email-address"
-              containerStyle={styles.marginBottom}
-              delay={501}
-            />
-            <View style={tw`mt-10`}>
-              <Animated.View
-                entering={FadeInDown.delay(502).duration(1500).springify()}
-              >
-                <SubmitBtn title="Sign link" />
-              </Animated.View>
-              <Animated.View
-                style={styles.linkConainer}
-                entering={FadeInDown.delay(506).duration(1500).springify()}
-              >
-                <AppLink
-                  onPress={() => navigation.navigate("Login")}
-                  title="Log in"
-                />
-                <AppLink
-                  onPress={() => navigation.navigate("SignUp")}
-                  title="Sign UP"
-                />
-              </Animated.View>
+          <AuthFormContainer
+            heading="Forget Password!"
+            subHeading="did you forget your password, don't worry we will help you get back in"
+          >
+            <View style={tw`w-100 items-center justify-center`}>
+              <Image
+                style={styles.png}
+                source={require("../../assets/images/forgetPassword.png")}
+              />
             </View>
-          </View>
-        </AuthFormContainer>
-      </Form>
-    </View>
+            <View style={styles.formContainer}>
+              <AuthInputField
+                name="email"
+                placeholder="john@gmail.com"
+                label="email"
+                keyboardType="email-address"
+                containerStyle={styles.marginBottom}
+                delay={501}
+              />
+              <View style={tw`mt-10`}>
+                <Animated.View
+                  entering={FadeInDown.delay(502).duration(1500).springify()}
+                >
+                  <SubmitBtn title="Sign link" />
+                </Animated.View>
+                <Animated.View
+                  style={styles.linkContainer}
+                  entering={FadeInDown.delay(506).duration(1500).springify()}
+                >
+                  <AppLink
+                    onPress={() => navigation.navigate("Login")}
+                    title="Log in"
+                  />
+                  <AppLink
+                    onPress={() => navigation.navigate("SignUp")}
+                    title="Sign UP"
+                  />
+                </Animated.View>
+              </View>
+            </View>
+          </AuthFormContainer>
+        </Form>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -107,7 +138,7 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 20,
   },
-  linkConainer: {
+  linkContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

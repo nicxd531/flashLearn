@@ -13,12 +13,32 @@ import {
   View,
 } from "react-native";
 import tw from "twrnc";
+import Animated, {
+  FadeInDown,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 interface Props {
   navigation: any;
 }
 
-const IntroPage: FC<Props> = ({ navigation }) => {
+const IntroPage: FC<Props> = () => {
+  const navigation = useNavigation();
+
+  const navigateToSignUp = () => {
+    navigation.navigate("SignUp");
+  };
+
+  const navigateToLogin = () => {
+    navigation.navigate("Login");
+  };
+  const inputTransformValue = useSharedValue(0);
+  const inputStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: inputTransformValue.value }],
+    };
+  });
   return (
     <View style={[styles.container]}>
       <StatusBar barStyle="light-content" hidden={true} translucent={true} />
@@ -26,7 +46,13 @@ const IntroPage: FC<Props> = ({ navigation }) => {
         style={styles.image}
         source={require("../../assets/images/IntroPage.jpg")}
       />
-      <View style={styles.overlay} />
+      <View style={styles.pngCover}>
+        <Image
+          style={{ width: 400, height: 400 }}
+          source={require("../../assets/images/intropng.png")}
+        />
+      </View>
+      {/* <View style={styles.overlay} /> */}
       <View style={styles.halfScreen}>
         <View
           style={{
@@ -44,17 +70,23 @@ const IntroPage: FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <Link
-            href={"/Login"}
+          <Animated.View
+            entering={FadeInDown.delay(500).duration(1500).springify()}
             style={[
+              inputStyle,
               defaultStyles.pillButton,
               { flex: 1, backgroundColor: colors.PRIMARY, marginBottom: 10 },
             ]}
-            asChild
           >
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate("Login")}
+              onPress={navigateToLogin}
+              style={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Text
                 style={{
@@ -66,22 +98,19 @@ const IntroPage: FC<Props> = ({ navigation }) => {
                 Log in
               </Text>
             </TouchableOpacity>
-          </Link>
-          <Link
-            href={"/Signup"}
+          </Animated.View>
+          <Animated.View
+            entering={FadeInDown.delay(500).duration(1500).springify()}
             style={[
+              inputStyle,
               defaultStyles.pillButton,
               { flex: 1, backgroundColor: "#fff", height: 60 },
             ]}
-            asChild
           >
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate("SignUp")}
-            >
+            <TouchableOpacity activeOpacity={0.8} onPress={navigateToSignUp}>
               <Text style={{ fontSize: 22, fontWeight: "500" }}>Sign up</Text>
             </TouchableOpacity>
-          </Link>
+          </Animated.View>
         </View>
       </View>
     </View>
@@ -118,7 +147,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     padding: 12,
-    width: "100%",
+    width: "80%",
     height: 150,
     justifyContent: "space-between",
   },
@@ -127,6 +156,13 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   button: {},
+  pngCover: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "60%",
+    marginTop: 50,
+  },
 });
 
 export default IntroPage;

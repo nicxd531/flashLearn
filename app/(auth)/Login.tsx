@@ -9,6 +9,8 @@ import {
   Pressable,
   Text,
   TouchableOpacity,
+  Platform,
+  ScrollView,
 } from "react-native";
 import * as yup from "yup";
 import SubmitBtn from "@/components/form/SubmitBtn";
@@ -23,6 +25,16 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import tw from "twrnc";
+import { FormikHelpers } from "formik";
+import client from "@/components/api/client";
+import {
+  updateLoading,
+  updateLoggedInState,
+  updateProfile,
+} from "@/utils/store/auth";
+import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";
+import { KeyboardAvoidingView } from "react-native";
 
 const { height } = Dimensions.get("window");
 
@@ -40,6 +52,10 @@ const signUpValidation = yup.object({
     .required("password is required"),
 });
 
+interface SignInUserInfo {
+  email: string;
+  password: string;
+}
 interface Props {
   navigation: any;
 }
@@ -49,6 +65,7 @@ const initialValues = {
 };
 
 const SignIn: FC<Props> = ({ navigation }) => {
+  const dispatch = useDispatch();
   const translateY = useSharedValue(height); // Start off-screen
 
   // Animated style that uses the translateY shared value
@@ -66,62 +83,124 @@ const SignIn: FC<Props> = ({ navigation }) => {
   const togglePasswordView = () => {
     setSecureEntry(!secureEntry);
   };
+  const handleSubmit = async (
+    values: SignInUserInfo,
+    actions: FormikHelpers<SignInUserInfo>
+  ) => {
+    try {
+      actions.setSubmitting(true);
+      const { data } = await client.post("/auth/sign-in", {
+        ...values,
+      });
+      dispatch(updateLoggedInState(false));
+
+      dispatch(updateLoading(false));
+      dispatch(updateProfile(data.profile));
+      dispatch(updateLoading(true));
+      dispatch(updateLoggedInState(true));
+      dispatch(updateLoading(false));
+
+      console.log({ data });
+      Toast.show({
+        text1: "success",
+        text2: "Log In Successful 🎉🎊",
+        type: "success", // can be 'success', 'error', 'info'
+        position: "top", // 'top', 'bottom', 'center'
+        visibilityTime: 4000, // duration in milliseconds
+        autoHide: true, // auto hide after visibilityTime
+      });
+    } catch (err) {
+      console.log("sign in err", err);
+      Toast.show({
+        text1: "Error",
+        text2: "Log In error ❌",
+        type: "error", // can be 'success', 'error', 'info'
+        position: "top", // 'top', 'bottom', 'center'
+        visibilityTime: 4000, // duration in milliseconds
+        autoHide: true, // auto hide after visibilityTime
+      });
+    }
+    actions.setSubmitting(false);
+
+    // send information to api
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/IntroPage.jpg")}
-      />
-      <View style={styles.overlay} />
-      <Form
-        onSubmit={(values) => {
-          console.log({ values });
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.PRIMARY,
         }}
-        initialValues={initialValues}
-        validationSchema={signUpValidation}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <AuthFormContainer heading="Welcome Back">
-          <View style={styles.formContainer}>
-            <View>
-              <AuthInputField
-                name="email"
-                placeholder="Email"
-                label="email"
-                keyboardType="email-address"
-                containerStyle={styles.marginBottom}
-                delay={502}
-              />
-              <AuthInputField
-                name="password"
-                placeholder="password"
-                label="Password"
-                autoCapitalize="none"
-                secureTextEntry={secureEntry}
-                containerStyle={styles.marginBottom}
-                rightIcon={<PasswordVisibilityIcon privateIcon={secureEntry} />}
-                onRightIconPress={togglePasswordView}
-                delay={505}
-              />
-              <View style={{ width: "100%", alignItems: "flex-end" }}>
-                <AppLink
-                  onPress={() => navigation.navigate("LostPassword")}
-                  title="Forgot Password?"
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/IntroPage.jpg")}
+        />
+        {/* <View style={styles.overlay} /> */}
+        <View style={styles.pngCover}>
+          <Image
+            style={{ width: 300, height: 300 }}
+            source={require("../../assets/images/Login.png")}
+          />
+        </View>
+        <Form
+          onSubmit={handleSubmit}
+          initialValues={initialValues}
+          validationSchema={signUpValidation}
+        >
+          <AuthFormContainer
+            heading="Please, Log In."
+            subHeading="Welcome Back!"
+          >
+            <View style={styles.formContainer}>
+              <View>
+                <AuthInputField
+                  name="email"
+                  placeholder="Email"
+                  label="email"
+                  keyboardType="email-address"
+                  containerStyle={styles.marginBottom}
+                  delay={502}
                 />
+                <AuthInputField
+                  name="password"
+                  placeholder="password"
+                  label="Password"
+                  autoCapitalize="none"
+                  secureTextEntry={secureEntry}
+                  containerStyle={styles.marginBottom}
+                  rightIcon={
+                    <PasswordVisibilityIcon privateIcon={secureEntry} />
+                  }
+                  onRightIconPress={togglePasswordView}
+                  delay={505}
+                />
+                <View style={{ width: "100%", alignItems: "flex-end" }}>
+                  <AppLink
+                    onPress={() => navigation.navigate("LostPassword")}
+                    title="Forgot Password?"
+                  />
+                </View>
+              </View>
+              <View style={tw`mt-3`}>
+                <SubmitBtn title="Sign In" />
+                <View style={[styles.linkContainer, tw`mt-2`]}>
+                  <Text style={{ color: "grey" }}>Don't have an account?</Text>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("SignUp")}
+                  >
+                    <Text style={{ color: "black" }}> Get Started</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-            <View style={tw`mt-30`}>
-              <SubmitBtn title="Sign In" />
-              <View style={[styles.linkContainer, tw`mt-2`]}>
-                <Text style={{ color: "grey" }}>Don't have an account?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                  <Text style={{ color: "black" }}> Get Started</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </AuthFormContainer>
-      </Form>
-    </View>
+          </AuthFormContainer>
+        </Form>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
@@ -132,6 +211,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+  },
+  scrollContainer: {
+    flex: 1,
   },
   formContainer: {
     width: "100%",
@@ -153,6 +235,7 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "absolute",
     right: 0,
+    flex: 1,
   },
   overlay: {
     width: "100%",
@@ -160,6 +243,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
+  },
+  pngCover: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "30%",
+    marginTop: 10,
   },
 });
 

@@ -2,7 +2,7 @@ import colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { Link } from "expo-router";
 import { FC } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import {
   Dimensions,
   Image,
@@ -18,13 +18,14 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+import { AuthStackParamList } from "@/@types/navigation";
 
 interface Props {
   navigation: any;
 }
 
 const IntroPage: FC<Props> = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const navigateToSignUp = () => {
     navigation.navigate("SignUp");

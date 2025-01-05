@@ -59,21 +59,23 @@ const AuthFormContainer: FC<Props> = ({ children, heading, subHeading }) => {
       break;
     case "Forget Password!":
       emoji = (
-        <View style={styles.headerContainer}>
-          <View>
-            <Text style={styles.heading}>{heading}</Text>
-            <View style={styles.roundedView}>
-              <Text style={styles.emoji}>😢</Text>
-            </View>
-          </View>
+        <View style={[styles.headerContainer, { marginTop: 50 }]}>
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              width: "100%",
               justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Text style={styles.subHeading}>{heading}</Text>
+            <Text style={[styles.heading, { width: "100%", fontSize: 38 }]}>
+              {heading}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View>
+              <Text style={styles.subHeading}>{subHeading}</Text>
+            </View>
+            <Text style={styles.emoji}>😔</Text>
           </View>
         </View>
       );
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 50,
     width: "80%",
+    flex: 1,
   },
   headerContainer: {
     width: "100%",

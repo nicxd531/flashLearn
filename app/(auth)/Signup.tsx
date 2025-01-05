@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    height: "30%",
-    marginTop: 5,
+
+    marginTop: 1,
   },
 });
 

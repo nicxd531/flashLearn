@@ -1,6 +1,8 @@
 import React, { FC } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Carousel from "react-native-snap-carousel";
+import { ActivityIndicator } from "react-native";
+import { Image } from "react-native-elements";
 
 const advert1 = require("../../../../assets/images/advert1.jpg");
 const advert2 = require("../../../../assets/images/advert2.jpg");
@@ -20,6 +22,7 @@ const Advert: FC<Props> = (props) => {
       <Image
         style={{ width: 300, height: 200, borderRadius: 8 }}
         source={item.image}
+        PlaceholderContent={<ActivityIndicator />}
       />
     </View>
   );

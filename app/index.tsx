@@ -1,5 +1,7 @@
+import { AuthStackParamList } from "@/@types/navigation";
 import colors from "@/constants/Colors";
-import { useNavigation } from "@react-navigation/native";
+import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { FC, useEffect } from "react";
 import {
   Image,
@@ -13,15 +15,23 @@ import {
 interface Props {}
 
 const Index: FC<Props> = (props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   useEffect(() => {
-    // Simulate loading or initialization logic
-    const timeout = setTimeout(() => {
-      navigation.navigate("IntroPage"); // Navigate to the main screen or auth flow
-    }, 2000); // 2 seconds delay
+    const initialize = async () => {
+      const token = await getFromAsyncStorage(Keys.AUTH_TOKEN);
+      if (token) {
+        navigation.navigate("IntroPage"); // Navigate to the main screen or auth flow
+      }
+      // Simulate loading or initialization logic
+      const timeout = setTimeout(() => {
+        navigation.navigate("IntroPage"); // Navigate to the main screen or auth flow
+      }, 2000); // 2 seconds delay
 
-    return () => clearTimeout(timeout); // Cleanup timeout on unmount
+      return () => clearTimeout(timeout); // Cleanup timeout on unmount
+    };
+
+    initialize();
   }, [navigation]);
 
   return (
@@ -63,8 +73,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   subText: {
-    fontSize: 18,
+    fontSize: 23,
     color: "#333",
+    fontWeight: "bold",
     marginTop: 10,
   },
 });

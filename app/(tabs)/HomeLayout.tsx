@@ -17,13 +17,11 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-
 import SearchScreen from "./SearchScreen";
 import HomeScreen from "./HomeScreen";
 import CreateScreen from "./CreateScreen";
 import ProfileScreen from "./ProfileScreen";
 import PlaylistScreen from "./PlaylistScreen";
-import PillToggleButton from "@/components/ui/home/PillToggleButton";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const CustomTabBarButton: React.FC<{
@@ -59,7 +57,7 @@ export default function HomeLayout() {
   return (
     <SafeAreaView style={styles.container}>
       {/* AppBar stays fixed at the top */}
-      <TopAppBar />
+      {/* <TopAppBar /> */}
 
       {/* Fixed Tab.Navigator */}
       <Tab.Navigator
@@ -117,7 +115,7 @@ export default function HomeLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <AntDesign
-                style={{ color: "#748c94" }}
+                style={{ color: "#fff" }}
                 name="plus"
                 size={25}
                 color="black"

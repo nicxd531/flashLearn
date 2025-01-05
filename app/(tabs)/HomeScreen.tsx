@@ -4,6 +4,7 @@ import TopCreators from "@/components/ui/home/TopCreators";
 import PillToggleButton from "@/components/ui/home/PillToggleButton";
 import DiscoverScreen from "@/components/ui/home/screens/DiscoverScreen";
 import ExploreScreen from "@/components/ui/home/screens/ExploreScreen";
+import TopAppBar from "@/components/ui/home/TopAppBar";
 
 const HomeScreen: React.FC = () => {
   const [activeScreen, setActiveScreen] = useState<"Explore" | "Discover">(
@@ -12,6 +13,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TopAppBar />
       {/* Scrollable content */}
       <ScrollView style={styles.scroll}>
         <TopCreators />
@@ -31,6 +33,7 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   scroll: {
     flex: 1,

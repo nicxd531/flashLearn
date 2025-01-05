@@ -13,12 +13,12 @@ export interface UserProfile {
 interface AuthState {
   profile: UserProfile | null;
   loggedIn: boolean;
-  loading: boolean;
+  busy: boolean;
 }
 const initialState: AuthState = {
   profile: null,
   loggedIn: false,
-  loading: false,
+  busy: false,
 };
 
 const slice = createSlice({
@@ -31,12 +31,12 @@ const slice = createSlice({
     updateLoggedInState(authState, { payload }) {
       authState.loggedIn = payload;
     },
-    updateLoading(authState, { payload }) {
-      authState.loading = payload;
+    updateBusyState(authState, { payload }) {
+      authState.busy = payload;
     },
   },
 });
-export const { updateLoggedInState, updateProfile, updateLoading } =
+export const { updateLoggedInState, updateProfile, updateBusyState } =
   slice.actions;
 
 export const getAuthState = createSelector(

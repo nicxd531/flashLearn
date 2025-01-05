@@ -7,6 +7,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import * as yup from "yup";
 import SubmitBtn from "@/components/form/SubmitBtn";
@@ -25,6 +26,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { FormikHelpers } from "formik";
 import client from "@/components/api/client";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AuthStackParamList } from "@/@types/navigation";
 const lostPasswordSchema = yup.object({
   email: yup
     .string()
@@ -33,9 +36,7 @@ const lostPasswordSchema = yup.object({
     .required("email is required"),
 });
 
-interface Props {
-  navigation: any;
-}
+interface Props {}
 interface initialValue {
   email: string;
 }
@@ -43,7 +44,8 @@ const initialValues = {
   email: "",
 };
 
-const LostPassword: FC<Props> = ({ navigation }) => {
+const LostPassword: FC<Props> = (props) => {
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const handleSubmit = async (
     values: initialValue,
     actions: FormikHelpers<initialValue>
@@ -62,16 +64,21 @@ const LostPassword: FC<Props> = ({ navigation }) => {
     // send information to api
   };
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={{ flex: 1 }}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.PRIMARY,
+        }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Image
           style={styles.image}
           source={require("../../assets/images/IntroPage.jpg")}
         />
-        <View style={styles.overlay} />
+        {/* <View style={styles.overlay} /> */}
         <Form
           onSubmit={handleSubmit}
           initialValues={initialValues}
@@ -81,12 +88,11 @@ const LostPassword: FC<Props> = ({ navigation }) => {
             heading="Forget Password!"
             subHeading="did you forget your password, don't worry we will help you get back in"
           >
-            <View style={tw`w-100 items-center justify-center`}>
-              <Image
-                style={styles.png}
-                source={require("../../assets/images/forgetPassword.png")}
-              />
-            </View>
+            <Image
+              style={styles.png}
+              source={require("../../assets/images/forgetPassword.png")}
+            />
+
             <View style={styles.formContainer}>
               <AuthInputField
                 name="email"
@@ -112,15 +118,15 @@ const LostPassword: FC<Props> = ({ navigation }) => {
                   />
                   <AppLink
                     onPress={() => navigation.navigate("SignUp")}
-                    title="Sign UP"
+                    title="Sign up"
                   />
                 </Animated.View>
               </View>
             </View>
           </AuthFormContainer>
         </Form>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
@@ -130,7 +136,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PRIMARY,
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
+    width: "100%",
+  },
+  scrollContainer: {
+    flex: 1,
+    width: "100%",
   },
   formContainer: {
     width: "100%",
@@ -158,8 +168,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
   },
   png: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
   },
 });
 

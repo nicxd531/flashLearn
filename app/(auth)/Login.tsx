@@ -1,5 +1,4 @@
 import AuthInputField from "@/components/form/AuthInputField";
-
 import { FC, useEffect, useState } from "react";
 import {
   Dimensions,
@@ -28,13 +27,18 @@ import tw from "twrnc";
 import { FormikHelpers } from "formik";
 import client from "@/components/api/client";
 import {
-  updateLoading,
+  updateBusyState,
   updateLoggedInState,
   updateProfile,
 } from "@/utils/store/auth";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
 import { KeyboardAvoidingView } from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AuthStackParamList } from "@/@types/navigation";
+import Toaster from "@/components/ui/reuseables/Toaster";
+import { Keys, saveToAsyncStorage } from "@/utils/asyncStorage";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 const { height } = Dimensions.get("window");
 
@@ -56,15 +60,14 @@ interface SignInUserInfo {
   email: string;
   password: string;
 }
-interface Props {
-  navigation: any;
-}
+interface Props {}
 const initialValues = {
   email: "",
   password: "",
 };
 
-const SignIn: FC<Props> = ({ navigation }) => {
+const SignIn: FC<Props> = (props) => {
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const dispatch = useDispatch();
   const translateY = useSharedValue(height); // Start off-screen
 
@@ -74,6 +77,7 @@ const SignIn: FC<Props> = ({ navigation }) => {
       transform: [{ translateY: translateY.value }],
     };
   });
+
   useEffect(() => {
     // Animate the view to slide in from the bottom
     translateY.value = withTiming(height * 0.2, { duration: 500 }); // Cover 80% of the screen height
@@ -92,33 +96,18 @@ const SignIn: FC<Props> = ({ navigation }) => {
       const { data } = await client.post("/auth/sign-in", {
         ...values,
       });
+
+      await saveToAsyncStorage(Keys.AUTH_TOKEN, data.token);
       dispatch(updateLoggedInState(false));
-
-      dispatch(updateLoading(false));
+      dispatch(updateBusyState(false));
       dispatch(updateProfile(data.profile));
-      dispatch(updateLoading(true));
+      dispatch(updateBusyState(true));
       dispatch(updateLoggedInState(true));
-      dispatch(updateLoading(false));
-
-      console.log({ data });
-      Toast.show({
-        text1: "success",
-        text2: "Log In Successful 🎉🎊",
-        type: "success", // can be 'success', 'error', 'info'
-        position: "top", // 'top', 'bottom', 'center'
-        visibilityTime: 4000, // duration in milliseconds
-        autoHide: true, // auto hide after visibilityTime
-      });
+      dispatch(updateBusyState(false));
+      toast.success("Verification Successful 🎉🎊");
     } catch (err) {
+      toast.error("Verification error ❌");
       console.log("sign in err", err);
-      Toast.show({
-        text1: "Error",
-        text2: "Log In error ❌",
-        type: "error", // can be 'success', 'error', 'info'
-        position: "top", // 'top', 'bottom', 'center'
-        visibilityTime: 4000, // duration in milliseconds
-        autoHide: true, // auto hide after visibilityTime
-      });
     }
     actions.setSubmitting(false);
 
@@ -135,6 +124,14 @@ const SignIn: FC<Props> = ({ navigation }) => {
         }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        {/* {showToaster && (
+          <Toaster
+            onHide={() => setShowToaster(false)}
+            message={toasterMessage}
+            type={toasterType}
+            translateY={0}
+          />
+        )} */}
         <Image
           style={styles.image}
           source={require("../../assets/images/IntroPage.jpg")}

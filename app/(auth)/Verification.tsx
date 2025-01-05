@@ -8,6 +8,7 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import AppLink from "@/components/ui/AppLink";
 import AuthFormContainer from "@/components/form/AuthFormContainer";
@@ -19,15 +20,23 @@ import axios from "axios";
 import colors from "@/constants/Colors";
 import { OtpInput } from "react-native-otp-entry";
 import Toast from "react-native-toast-message";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AuthStackParamList } from "@/@types/navigation";
+import Toaster from "@/components/ui/reuseables/Toaster";
 
 interface Props {
   route: any;
-  navigation: any;
 }
 
 const otpFields = new Array(6).fill("");
-const Verification: FC<Props> = ({ route, navigation }) => {
+const Verification: FC<Props> = ({ route }) => {
   const { userInfo } = route.params;
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+  const [showToaster, setShowToaster] = useState(false);
+  const [toasterMessage, setToasterMessage] = useState("");
+  const [toasterType, setToasterType] = useState<"success" | "info" | "error">(
+    "info"
+  );
 
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
@@ -46,7 +55,7 @@ const Verification: FC<Props> = ({ route, navigation }) => {
     }
     setOtp([...newOtp]);
   };
-  console.log({ otp });
+  // console.log({ otp });
   const handlePaste = (value: string) => {
     if (value.length === 6) {
       Keyboard.dismiss();
@@ -73,26 +82,11 @@ const Verification: FC<Props> = ({ route, navigation }) => {
       // You can now use the data as needed
       console.log(data); // Process the data as needed
 
-      Toast.show({
-        text1: "success",
-        text2: "Verification Successful 🎉🎊",
-        type: "success", // can be 'success', 'error', 'info'
-        position: "top", // 'top', 'bottom', 'center'
-        visibilityTime: 4000, // duration in milliseconds
-        autoHide: true, // auto hide after visibilityTime
-      });
       // navigate to sign in
       navigation.navigate("Login");
     } catch (error) {
       console.log({ error });
-      Toast.show({
-        text1: "Error",
-        text2: "verification error ❌",
-        type: "error", // can be 'success', 'error', 'info'
-        position: "top", // 'top', 'bottom', 'center'
-        visibilityTime: 4000, // duration in milliseconds
-        autoHide: true, // auto hide after visibilityTime
-      });
+
       setSubmitting(false);
     }
     setSubmitting(false);
@@ -105,6 +99,9 @@ const Verification: FC<Props> = ({ route, navigation }) => {
       await client.post("/auth/re-verify-email", {
         userId: userInfo.id,
       });
+      setToasterMessage("Verification Successful 🎉🎊");
+      setToasterType("success");
+      setShowToaster(true);
     } catch (error) {
       console.log("requesting for new otp", error);
     }
@@ -133,70 +130,102 @@ const Verification: FC<Props> = ({ route, navigation }) => {
   }, [canSendNewOtpRequest]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <View style={{ flex: 1, height: "100%" }}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.PRIMARY,
+        }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        {showToaster && (
+          <Toaster
+            message={toasterMessage}
+            type={toasterType}
+            translateY={0}
+            onHide={() => setShowToaster(false)}
+          />
+        )}
         <Image
           style={styles.image}
           source={require("../../assets/images/IntroPage.jpg")}
         />
-        <View style={styles.overlay} />
-        <View style={{ height: "100%" }}>
-          <AuthFormContainer heading="">
-            <View style={tw`w-100  items-center justify-center`}>
-              <Image
-                style={styles.png}
-                source={require("../../assets/images/otpPng.png")}
-              />
-              <View
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={tw`font-bold text-4xl`}> Verification</Text>
-                <Text style={tw` text-2xl`}> check your registered email</Text>
+        <View
+          style={{
+            flex: 1,
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ height: "100%", paddingHorizontal: 20 }}>
+            <AuthFormContainer heading="">
+              <View style={{ paddingHorizontal: 20 }}>
+                <View style={tw`w-100  items-center justify-center`}>
+                  <Image
+                    style={styles.png}
+                    source={require("../../assets/images/otpPng.png")}
+                  />
+                  <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Text style={tw`font-bold text-4xl`}> Verification</Text>
+                    <Text style={tw` text-2xl`}>
+                      {" "}
+                      check your registered email
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.inputContainer}>
+                  <OtpInput
+                    numberOfDigits={6}
+                    onTextChange={handlePaste}
+                    focusColor={colors.PRIMARY}
+                    focusStickBlinkingDuration={400}
+                    disabled={false}
+                    type="numeric"
+                    theme={{
+                      pinCodeContainerStyle: {
+                        borderColor: "whitesmoke",
+                      },
+                    }}
+                  />
+                </View>
+                <View
+                  style={[
+                    tw`mt-25`,
+                    { width: "70%", marginHorizontal: "auto" },
+                  ]}
+                >
+                  <AppButton
+                    busy={submitting}
+                    title="Submit"
+                    onPress={handleSubmit}
+                  />
+                </View>
+                <View style={styles.linkContainer}>
+                  {countDown > 0 ? (
+                    <Text style={styles.countDown}>{countDown} sec</Text>
+                  ) : null}
+                  <AppLink
+                    active={canSendNewOtpRequest}
+                    title="Re-send OTP"
+                    onPress={requestForNewOtp}
+                  />
+                </View>
               </View>
-            </View>
-            <View style={styles.inputContainer}>
-              <OtpInput
-                numberOfDigits={6}
-                onTextChange={handlePaste}
-                focusColor={colors.PRIMARY}
-                focusStickBlinkingDuration={400}
-                disabled={false}
-                type="numeric"
-                theme={{
-                  pinCodeContainerStyle: {
-                    borderColor: "grey",
-                  },
-                }}
-              />
-            </View>
-            <View style={tw`mt-25`}></View>
-            <AppButton
-              busy={submitting}
-              title="Submit"
-              onPress={handleSubmit}
-            />
-            <View style={styles.linkContainer}>
-              {countDown > 0 ? (
-                <Text style={styles.countDown}>{countDown} sec</Text>
-              ) : null}
-              <AppLink
-                active={canSendNewOtpRequest}
-                title="Re-send OTP"
-                onPress={requestForNewOtp}
-              />
-            </View>
-          </AuthFormContainer>
+            </AuthFormContainer>
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
@@ -208,6 +237,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  scrollContainer: {
+    flex: 1,
   },
   linkContainer: {
     width: "100%",
@@ -229,8 +262,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
   },
   png: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
   },
   countDown: {
     color: colors.SECONDARY,

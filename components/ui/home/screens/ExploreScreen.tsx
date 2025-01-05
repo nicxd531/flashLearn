@@ -1,9 +1,11 @@
 import { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
-
 import Advert from "./Advert";
-import Favorite from "../Favourites";
+import Favorite from "../Favorites";
+import RecentlyPlayed from "../RecentlyPlayed";
+import Favorites from "../Favorites";
+import Categories from "../Categories";
 
 interface Props {}
 
@@ -11,7 +13,9 @@ const ExploreScreen: FC<Props> = (props) => {
   return (
     <View style={styles.container}>
       <Advert />
-      <Favorite />
+      <RecentlyPlayed />
+      <Favorites />
+      <Categories />
     </View>
   );
 };

@@ -116,27 +116,14 @@ const SignIn: FC<Props> = (props) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <KeyboardAvoidingView
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: colors.PRIMARY,
-        }}
+        style={styles.secondContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* {showToaster && (
-          <Toaster
-            onHide={() => setShowToaster(false)}
-            message={toasterMessage}
-            type={toasterType}
-            translateY={0}
-          />
-        )} */}
         <Image
           style={styles.image}
           source={require("../../assets/images/IntroPage.jpg")}
         />
-        {/* <View style={styles.overlay} /> */}
+
         <View style={styles.pngCover}>
           <Image
             style={{ width: 300, height: 300 }}
@@ -208,6 +195,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+  },
+  secondContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.PRIMARY,
   },
   scrollContainer: {
     flex: 1,

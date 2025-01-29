@@ -12,6 +12,7 @@ import {
   Text,
 } from "react-native";
 
+
 interface Props {}
 
 const Index: FC<Props> = (props) => {

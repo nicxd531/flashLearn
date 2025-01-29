@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Button,
@@ -13,26 +13,42 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
 import { ActivityIndicator } from "react-native";
 import { Image } from "react-native-elements";
+import { FromFields } from "@/@types/reuseables";
 
-const PosterPreview: React.FC = () => {
+interface props {
+  collectionInfo: FromFields;
+  setCollectionInfo: React.Dispatch<React.SetStateAction<FromFields>>;
+}
+
+const PosterPreview: React.FC<props> = (props) => {
+  const { collectionInfo, setCollectionInfo } = props;
   const [imageUri, setImageUri] = useState<string | null>(null);
-  //   console.log({ imageUri });
 
   const handleImageUpload = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      const asset = result.assets[0];
+      setImageUri(asset.uri);
+      setCollectionInfo({
+        ...collectionInfo,
+        poster: {
+          uri: asset.uri,
+          name: asset.fileName || "image.jpg",
+          type: asset.type || "image/jpeg",
+          size: asset.fileSize || 0,
+        },
+      });
     }
   };
+  useEffect(() => {
+    console.log({ collectionInfo });
+  }, [collectionInfo]);
 
   return (
     <Surface style={styles.container}>
@@ -63,10 +79,10 @@ const PosterPreview: React.FC = () => {
         <Image
           source={{ uri: imageUri }}
           style={{
-            width: "100%",
+            width: 300,
             height: "100%",
-            objectFit: "cover",
-            borderRadius: 20,
+            marginTop: 16,
+            borderRadius: 8,
           }}
           PlaceholderContent={<ActivityIndicator size={40} />}
         />

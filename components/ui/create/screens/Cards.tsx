@@ -8,10 +8,13 @@ import colors from "@/constants/Colors";
 import CreateModal from "../CreateModal";
 import * as Progress from "react-native-progress";
 import { toast, Toasts } from "@backpackapp-io/react-native-toast";
+import { RootState } from "@/utils/store";
+import { useSelector } from "react-redux";
 
 interface Props {}
 
 const Cards: FC<Props> = (props) => {
+  const { collectionId } = useSelector((state: RootState) => state.collection);
   const [stackStyle, setStackStyle] = React.useState("default");
   const [visible, setVisible] = React.useState(false);
   const onClose = () => {};
@@ -32,9 +35,6 @@ const Cards: FC<Props> = (props) => {
     return currentCardIndex / totalCards;
   };
   const progress = calculateProgress(currentIndex + 1, data.length);
-  useEffect(() => {
-    toast.success("we are i uin");
-  }, []);
   return (
     <View style={styles.container}>
       <View style={[styles.heading]}>
@@ -60,10 +60,10 @@ const Cards: FC<Props> = (props) => {
       <CreateModal
         visible={visible}
         onClose={() => setVisible(false)}
-        message={"message panel"}
+        message={" Add Cards panel"}
       />
       <Surface
-        style={tw`flex-row justify-between items-center w-25 p-2 rounded-lg m-auto align-center mb-6 `}
+        style={tw`flex-row justify-between items-center w-25 p-2 rounded-lg m-auto mb-6 `}
       >
         <ToggleButton.Group
           onValueChange={(stackStyle) => setStackStyle(stackStyle)}

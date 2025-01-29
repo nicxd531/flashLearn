@@ -1,13 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
-import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
+// import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 
 interface Props {}
 
 const Stepper: React.FC<Props> = (props) => {
   return (
     <View style={styles.container}>
-      <ProgressSteps>
+      {/* <ProgressSteps>
         <ProgressStep label="First Step">
           <View style={styles.stepContent}>
             <Text>This is the content within step 1!</Text>
@@ -38,7 +38,7 @@ const Stepper: React.FC<Props> = (props) => {
             <Button title="Next" onPress={() => console.log("Next step")} />
           </View>
         </ProgressStep>
-      </ProgressSteps>
+      </ProgressSteps> */}
     </View>
   );
 };

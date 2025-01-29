@@ -22,9 +22,10 @@ import { AuthStackParamList } from "@/@types/navigation";
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
 import client from "@/components/api/client";
 import React, { useEffect, useState } from "react";
+import { RootState } from "@/utils/store";
 
 const AuthNavigator = () => {
-  const { loggedIn, busy } = useSelector(getAuthState);
+  const { loggedIn, busy } = useSelector((state: RootState) => state.auth);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const dispatch = useDispatch();
   const Stack = createNativeStackNavigator();
@@ -89,6 +90,7 @@ const AuthNavigator = () => {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="LostPassword" component={LostPassword} />
+            <Stack.Screen name="Verification" component={Verification} />
           </>
         ) : (
           <>

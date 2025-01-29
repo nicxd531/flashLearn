@@ -6,6 +6,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import {
   Dimensions,
   Image,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -41,7 +42,10 @@ const IntroPage: FC<Props> = () => {
     };
   });
   return (
-    <View style={[styles.container]}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      style={[styles.container]}
+    >
       <StatusBar barStyle="light-content" hidden={true} translucent={true} />
       <Image
         style={styles.image}
@@ -114,7 +118,8 @@ const IntroPage: FC<Props> = () => {
           </Animated.View>
         </View>
       </View>
-    </View>
+      <View style={{ height: 400 }} />
+    </ScrollView>
   );
 };
 

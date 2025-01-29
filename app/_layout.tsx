@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import AuthNavigator from "./AuthNavigator";
 import AppContainer from "@/components/AppContainer";
 
+
 const Layout: React.FC = () => {
   return (
     <Provider store={store}>

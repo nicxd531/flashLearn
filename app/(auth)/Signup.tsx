@@ -90,7 +90,6 @@ const SignUp: FC<Props> = ({ navigation }) => {
         autoHide: true, // auto hide after visibilityTime
       });
     } catch (err) {
-      console.log("sign up err", err);
       Toast.show({
         text1: "Error",
         text2: "Sign up error",

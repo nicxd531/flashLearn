@@ -14,11 +14,13 @@ interface AuthState {
   profile: UserProfile | null;
   loggedIn: boolean;
   busy: boolean;
+  busyACollection: boolean;
 }
 const initialState: AuthState = {
   profile: null,
   loggedIn: false,
   busy: false,
+  busyACollection: false,
 };
 
 const slice = createSlice({

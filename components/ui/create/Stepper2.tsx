@@ -5,16 +5,33 @@ import tw from "twrnc";
 import colors from "@/constants/Colors";
 import InfoPage from "./screens/InfoPage";
 import Cards from "./screens/Cards";
-const MyComponent = (props: any) => {
-  return (
-    <View style={tw`flex-1 justify-center items-center w-full h-full`}>
-      <Text>{props.title}</Text>
-    </View>
-  );
-};
+import { categories } from "@/utils/Categories";
+import * as yup from "yup";
+import { defaultForm } from "@/@types/reuseables";
+
 const Stepper2 = () => {
+  const [collectionInfo, setCollectionInfo] = React.useState({
+    ...defaultForm,
+  });
+
   const [active, setActive] = useState(0);
-  const content = [<InfoPage setActive={setActive} />, <Cards />];
+  const collectionInfoSchema = yup.object().shape({
+    title: yup.string().trim().required("Title is missing!"),
+    category: yup.string().oneOf(categories, "Category is missing "),
+    description: yup.string().trim().required("Description is missing!"),
+    poster: yup.object().shape({
+      uri: yup.string().required("collection poster is missing!"),
+    }),
+  });
+  const content = [
+    <InfoPage
+      collectionInfo={collectionInfo}
+      setCollectionInfo={setCollectionInfo}
+      setActive={setActive}
+    />,
+    <Cards />,
+  ];
+
   return (
     <View style={{ marginVertical: 20, flex: 1 }}>
       <Stepper

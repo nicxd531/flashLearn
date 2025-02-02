@@ -15,8 +15,6 @@ interface Props {
 const AddQuestionInput: FC<Props> = (props) => {
   const { question, setQuestion, answer, setAnswer, addQaItem, busyAQuestion } =
     props;
-  console.log("busyAQuestion", busyAQuestion);
-
   return (
     <View style={[tw`w-75`]}>
       <TextInput

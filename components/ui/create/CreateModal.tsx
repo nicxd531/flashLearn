@@ -1,7 +1,7 @@
 import client from "@/components/api/client";
 import { RootState } from "@/utils/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { Button, Divider, List, Text, TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,7 @@ import axios from "axios";
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
 import * as yup from "yup";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Import the icon library
+import colors from "@/constants/Colors";
 
 interface NotificationModalProps {
   visible: boolean;
@@ -37,16 +39,15 @@ const CreateModal: React.FC<NotificationModalProps> = ({
   const { collectionId, busyAQuestion } = useSelector(
     (state: RootState) => state.collection
   );
-  console.log("collectionId", collectionId);
+  // console.log("collectionId", collectionId);
   const [question, setQuestion] = React.useState("");
   const [answer, setAnswer] = React.useState("");
-  const [qaList, setQaList] = React.useState<
-    { question: string; answer: string }[]
+  const [errorM, setError] = useState<string | null>(null);
+  const [qaList, setQaList] = useState<
+    { question: string; answer: string; cardId: string; collectionId: string }[]
   >([]);
   const dispatch = useDispatch();
-
   const addQaItem = async () => {
-    console.log({ busyAQuestion });
     dispatch(updateBusyStateQuestion(true));
     try {
       const finalData = await cardsInfoSchema.validate({ question, answer });
@@ -55,7 +56,6 @@ const CreateModal: React.FC<NotificationModalProps> = ({
         if (!token) {
           throw new Error("User is not authenticated. Token is missing.");
         }
-
         const { data } = await client.post(
           "/collection/create-Card",
           {
@@ -69,9 +69,17 @@ const CreateModal: React.FC<NotificationModalProps> = ({
             },
           }
         );
-        toast.success("Card Created 🎉🎊");
         console.log("data", data);
-        setQaList([...qaList, { question, answer }]);
+        const cardId = data.card._id;
+        toast.success("Card Created 🎉🎊");
+        const cardMessage = console.log({ cardId });
+
+        if (!collectionId) {
+          throw new Error("Collection ID is missing.");
+        }
+        const newData = { question, answer, cardId, collectionId };
+        console.log({ newData });
+        setQaList([...qaList, newData]);
         setQuestion("");
         setAnswer("");
       }
@@ -123,7 +131,7 @@ const CreateModal: React.FC<NotificationModalProps> = ({
             </TouchableOpacity>
           </View>
           <View style={tw`w-full items-center`}>
-            <ScrollView>
+            <View>
               <Text style={styles.message}>{message}</Text>
               <AddQuestionInput
                 question={question}
@@ -133,12 +141,30 @@ const CreateModal: React.FC<NotificationModalProps> = ({
                 addQaItem={addQaItem}
                 busyAQuestion={busyAQuestion}
               />
-              <ListOfCards qaList={qaList} />
-            </ScrollView>
+              {busyAQuestion ? (
+                <View style={styles.activityIndicatorContainer}>
+                  <ActivityIndicator size="large" color={colors.SECONDARY} />
+                </View>
+              ) : (
+                <ListOfCards
+                  qaList={qaList}
+                  setQaList={setQaList}
+                  error={errorM}
+                />
+              )}
+            </View>
           </View>
         </View>
       </View>
-      <Toasts />
+      <Toasts
+        overrideDarkMode={true}
+        globalAnimationType="spring"
+        globalAnimationConfig={{
+          duration: 1000,
+          flingPositionReturnDuration: 200,
+          stiffness: 50,
+        }}
+      />
     </Modal>
   );
 };
@@ -168,6 +194,12 @@ const styles = StyleSheet.create({
   closeButton: {},
   addButton: {
     marginTop: 10,
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 300, // Adjust the height as needed
   },
 });
 

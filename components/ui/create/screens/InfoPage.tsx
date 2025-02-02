@@ -8,7 +8,6 @@ import { categories } from "@/utils/Categories";
 import * as yup from "yup";
 import client from "@/components/api/client";
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
-
 import TextHCheckBox from "../../reuseables/TextHCheckBox";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "@backpackapp-io/react-native-toast";
@@ -30,7 +29,6 @@ const InfoPage: FC<Props> = (props) => {
   const { busyACollection } = useSelector(
     (state: RootState) => state.collection
   );
-
   const dispatch = useDispatch();
   const { collectionInfo, setCollectionInfo } = props;
   const [checked, setChecked] = React.useState(false);
@@ -40,14 +38,12 @@ const InfoPage: FC<Props> = (props) => {
   }));
 
   const visibility = checked ? "public" : "private";
-
   const handleSubmit = async () => {
     dispatch(updateBusyStateCollection(true));
     try {
       const finalData = await collectionInfoSchema.validate(collectionInfo);
       const formData = new FormData();
       const { category, title, description } = finalData;
-
       formData.append("title", title);
       formData.append("description", description);
       if (category) {
@@ -56,7 +52,6 @@ const InfoPage: FC<Props> = (props) => {
         console.error("Category is missing or undefined");
       }
       formData.append("visibility", visibility);
-
       if (
         finalData.poster?.uri &&
         finalData.poster?.name &&
@@ -70,16 +65,13 @@ const InfoPage: FC<Props> = (props) => {
       } else {
         console.error("Poster is missing or incomplete");
       }
-
       const token = await getFromAsyncStorage(Keys.AUTH_TOKEN);
       if (!token) {
         throw new Error("User is not authenticated. Token is missing.");
       }
-
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
-
+      // formData.forEach((value, key) => {
+      //   console.log(`${key}: ${value}`);
+      // });
       const response = await client.post("/collection/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,23 +84,25 @@ const InfoPage: FC<Props> = (props) => {
       }
       const data = await response.data;
       toast.success("Collection Created 🎉🎊");
-      console.log("Response data:", data);
-
+      dispatch(updateCollectionId(data.collection.collectionId));
+      // console.log("Response data:", data);
       props.setActive((p: number) => p + 1);
     } catch (error) {
-      console.error("Error during submission:", error);
+      // console.error("Error during submission:", error);
       if (error instanceof yup.ValidationError) {
-        console.log("Validation error:", error.message);
-        toast.error(error.message + "❌");
+        // console.log("Validation error:", error.message);
+        toast.error(error.message + ""), { icon: "❌" };
       } else if (axios.isAxiosError(error)) {
-        console.error(
-          "Axios error:",
-          error.response?.data?.message || error.message
-        );
-        toast.error(error.response?.data?.message || error.message + "❌");
+        // console.error(
+        //   "Axios error:",
+        //   error.response?.data?.message || error.message
+        // );
+        toast.error(error.response?.data?.message || error.message + "", {
+          icon: "❌",
+        });
       } else {
-        console.log("Unexpected error:", (error as Error).message || error);
-        toast.error((error as Error).message || error + "❌");
+        // console.log("Unexpected error:", (error as Error).message || error);
+        toast.error((error as Error).message || error + "", { icon: "❌" });
       }
     } finally {
       dispatch(updateBusyStateCollection(false));

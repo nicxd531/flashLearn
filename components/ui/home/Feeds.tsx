@@ -29,7 +29,6 @@ const Feeds: FC<{
     <View style={{ borderRadius: 50, overflow: "hidden", height: 500 }}>
       <TouchableRipple
         style={styles.feedItem}
-        // onPress={() => console.log("Pressed")}
         rippleColor="rgba(0, 0, 0, .32)"
       >
         <ImageBackground source={{ uri: image }} style={styles.imageBackground}>

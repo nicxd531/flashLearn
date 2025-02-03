@@ -15,6 +15,7 @@ import { collectionInfoSchema, FromFields } from "@/@types/reuseables";
 import { RootState } from "@/utils/store"; // Import RootState
 import {
   updateBusyStateCollection,
+  updateCollectionData,
   updateCollectionId,
 } from "@/utils/store/Collection";
 import BtnRNPIcon from "../../reuseables/BtnRNPIcon";
@@ -39,6 +40,7 @@ const InfoPage: FC<Props> = (props) => {
 
   const visibility = checked ? "public" : "private";
   const handleSubmit = async () => {
+    dispatch(updateCollectionData(null));
     dispatch(updateBusyStateCollection(true));
     try {
       const finalData = await collectionInfoSchema.validate(collectionInfo);

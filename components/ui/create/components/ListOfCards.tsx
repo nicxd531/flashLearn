@@ -13,7 +13,7 @@ interface ListOfCardsProps {
   qaList: {
     question: string;
     answer: string;
-    cardId: string;
+    _id: string;
     collectionId: string;
   }[];
   setQaList: React.Dispatch<
@@ -21,7 +21,7 @@ interface ListOfCardsProps {
       {
         question: string;
         answer: string;
-        cardId: string;
+        _id: string;
         collectionId: string;
       }[]
     >
@@ -79,7 +79,7 @@ const ListOfCards: React.FC<ListOfCardsProps> = ({
     item: {
       question: string;
       answer: string;
-      cardId: string;
+      _id: string;
       collectionId: string;
     };
     index: number;
@@ -90,7 +90,7 @@ const ListOfCards: React.FC<ListOfCardsProps> = ({
         <Text style={styles.qaText}>A: {item.answer}</Text>
       </View>
       <TouchableOpacity
-        onPress={() => deleteItem(index, item.cardId, item.collectionId)}
+        onPress={() => deleteItem(index, item._id, item.collectionId)}
       >
         <MaterialCommunityIcons name="delete" size={24} color="red" />
       </TouchableOpacity>

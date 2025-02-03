@@ -10,13 +10,21 @@ import * as Progress from "react-native-progress";
 import { toast, Toasts } from "@backpackapp-io/react-native-toast";
 import { RootState } from "@/utils/store";
 import { useSelector } from "react-redux";
+import client from "@/components/api/client";
+import axios from "axios";
+import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
+import ToggleBtn from "../components/ToggleBtn";
+import FullCardComp from "../components/FullCardComp";
 
 interface Props {}
 
 const Cards: FC<Props> = (props) => {
-  const { collectionId } = useSelector((state: RootState) => state.collection);
+  const { collectionId, busyAQuestion, collectionData } = useSelector(
+    (state: RootState) => state.collection
+  );
   const [stackStyle, setStackStyle] = React.useState("default");
   const [visible, setVisible] = React.useState(false);
+  console.log({ collectionData });
   const onClose = () => {};
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const advert1 = require("../../../../assets/images/advert1.jpg");
@@ -35,6 +43,7 @@ const Cards: FC<Props> = (props) => {
     return currentCardIndex / totalCards;
   };
   const progress = calculateProgress(currentIndex + 1, data.length);
+  console.log({ collectionData });
   return (
     <View style={styles.container}>
       <View style={[styles.heading]}>
@@ -62,54 +71,39 @@ const Cards: FC<Props> = (props) => {
         onClose={() => setVisible(false)}
         message={" Add Cards panel"}
       />
-      <Surface
-        style={tw`flex-row justify-between items-center w-25 p-2 rounded-lg m-auto mb-6 `}
-      >
-        <ToggleButton.Group
-          onValueChange={(stackStyle) => setStackStyle(stackStyle)}
-          value={stackStyle}
-        >
-          <ToggleButton
-            icon={() => (
-              <MaterialCommunityIcons
-                name="view-carousel-outline"
-                size={30}
-                color={colors.PRIMARY}
-                onPress={() => setStackStyle("default")}
-              />
-            )}
-            value="left"
-          />
-          <ToggleButton
-            icon={() => (
-              <MaterialCommunityIcons
-                name="cards"
-                size={30}
-                color={colors.PRIMARY}
-                onPress={() => setStackStyle("stack")}
-              />
-            )}
-            value="right"
-          />
-        </ToggleButton.Group>
-      </Surface>
-      <View style={tw`flex-1`}>
-        <CardsSlider
-          stackStyle={stackStyle}
-          currentIndex={currentIndex}
-          setCurrentIndex={setCurrentIndex}
-          data={data}
-        />
-      </View>
-      <View
-        style={tw`flex-row justify-center items-center w-full m-auto mt-10 flex-col`}
-      >
-        <Progress.Bar progress={progress} width={200} color={colors.PRIMARY} />
+      <ToggleBtn setStackStyle={setStackStyle} stackStyle={stackStyle} />
+      <FullCardComp
+        stackStyle={stackStyle}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+        data={Array.isArray(collectionData?.cards) ? collectionData.cards : []}
+        progress={progress}
+      />
+      {collectionData && (
+        <View>
+          <View style={tw`p-4 bg-white shadow-md rounded-md mb-4`}>
+            <Text style={tw`text-xl font-bold`}>{collectionData?.title}</Text>
+            <Text style={tw`text-base text-gray-600`}>
+              description{collectionData?.description}
+            </Text>
+            <Text style={tw`text-base text-gray-600`}>
+              category: {collectionData?.cards.length}
+              {collectionData?.category}
+            </Text>
+            <Text style={tw`text-base text-gray-600`}>
+              visibility:
+              {collectionData?.visibility}
+            </Text>
+            <Text style={tw`text-base text-gray-600`}>
+              Number of Cards: {collectionData?.cards.length}
+            </Text>
+            <Text style={tw`text-base text-gray-600`}>
+              Number of likes: {collectionData?.likes.length}
+            </Text>
+          </View>
+        </View>
+      )}
 
-        <Text style={[styles.counter, tw`mt-2`]}>
-          {currentIndex + 1} / {data.length}
-        </Text>
-      </View>
       <View style={{ marginBottom: 40 }} />
     </View>
   );

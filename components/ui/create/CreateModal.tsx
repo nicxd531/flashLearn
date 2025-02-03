@@ -1,28 +1,28 @@
 import client from "@/components/api/client";
 import { RootState } from "@/utils/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
-  FlatList,
   ActivityIndicator,
 } from "react-native";
-import { Button, Divider, List, Text, TextInput } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "twrnc";
 import AddQuestionInput from "./components/AddQuestionInput";
 import ListOfCards from "./components/ListOfCards";
-import { updateBusyStateQuestion } from "@/utils/store/Collection";
+import {
+  updateBusyStateQuestion,
+  updateCollectionData,
+} from "@/utils/store/Collection";
 import { cardsInfoSchema } from "@/@types/reuseables";
 import { toast, Toasts } from "@backpackapp-io/react-native-toast";
 import axios from "axios";
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
 import * as yup from "yup";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Import the icon library
 import colors from "@/constants/Colors";
 
 interface NotificationModalProps {
@@ -36,7 +36,7 @@ const CreateModal: React.FC<NotificationModalProps> = ({
   onClose,
   message,
 }) => {
-  const { collectionId, busyAQuestion } = useSelector(
+  const { collectionId, busyAQuestion, collectionData } = useSelector(
     (state: RootState) => state.collection
   );
   // console.log("collectionId", collectionId);
@@ -44,7 +44,7 @@ const CreateModal: React.FC<NotificationModalProps> = ({
   const [answer, setAnswer] = React.useState("");
   const [errorM, setError] = useState<string | null>(null);
   const [qaList, setQaList] = useState<
-    { question: string; answer: string; cardId: string; collectionId: string }[]
+    { question: string; answer: string; _id: string; collectionId: string }[]
   >([]);
   const dispatch = useDispatch();
   const addQaItem = async () => {
@@ -69,22 +69,17 @@ const CreateModal: React.FC<NotificationModalProps> = ({
             },
           }
         );
-        console.log("data", data);
-        const cardId = data.card._id;
-        toast.success("Card Created 🎉🎊");
-        const cardMessage = console.log({ cardId });
-
-        if (!collectionId) {
-          throw new Error("Collection ID is missing.");
-        }
-        const newData = { question, answer, cardId, collectionId };
-        console.log({ newData });
-        setQaList([...qaList, newData]);
+        toast.success("Card Created ", { icon: "🎉🎊" });
+        const newData = data.collection.cards.map((card: any) => ({
+          ...card,
+          _id: card._id,
+        }));
+        dispatch(updateCollectionData(data.collection));
+        setQaList([...newData]);
         setQuestion("");
         setAnswer("");
       }
     } catch (error) {
-      toast.error("❌", { icon: "❌" });
       if (error instanceof yup.ValidationError) {
         console.error(
           "Validation error:",
@@ -96,11 +91,14 @@ const CreateModal: React.FC<NotificationModalProps> = ({
           (error.response?.data?.message as string) || error.message
         );
         toast.error(
-          (error.response?.data?.message as string) || error.message + "❌"
+          (error.response?.data?.message as string) || error.message,
+          { icon: "❌" }
         );
       } else {
         console.error("Unexpected error:", (error as Error).message || error);
-        toast.error((error as Error).message || error + "❌");
+        toast.error((error as Error).message || (error as string), {
+          icon: "❌",
+        });
       }
     } finally {
       dispatch(updateBusyStateQuestion(false));

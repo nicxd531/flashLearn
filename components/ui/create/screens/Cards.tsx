@@ -24,7 +24,7 @@ const Cards: FC<Props> = (props) => {
   );
   const [stackStyle, setStackStyle] = React.useState("default");
   const [visible, setVisible] = React.useState(false);
-  console.log({ collectionData });
+  // console.log({ collectionData });
   const onClose = () => {};
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const advert1 = require("../../../../assets/images/advert1.jpg");
@@ -43,7 +43,7 @@ const Cards: FC<Props> = (props) => {
     return currentCardIndex / totalCards;
   };
   const progress = calculateProgress(currentIndex + 1, data.length);
-  console.log({ collectionData });
+  // console.log({ collectionData });
   return (
     <View style={styles.container}>
       <View style={[styles.heading]}>
@@ -72,32 +72,38 @@ const Cards: FC<Props> = (props) => {
         message={" Add Cards panel"}
       />
       <ToggleBtn setStackStyle={setStackStyle} stackStyle={stackStyle} />
-      <FullCardComp
-        stackStyle={stackStyle}
-        currentIndex={currentIndex}
-        setCurrentIndex={setCurrentIndex}
-        data={Array.isArray(collectionData?.cards) ? collectionData.cards : []}
-        progress={progress}
-      />
-      {collectionData && (
+      {(collectionData?.cards?.length ?? 0) > 0 ? (
+        <FullCardComp
+          stackStyle={stackStyle}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+          data={
+            Array.isArray(collectionData?.cards) ? collectionData.cards : []
+          }
+          progress={progress}
+        />
+      ) : (
+        <View style={tw`flex-1 w-full justify-center items-center`}>
+          <Text variant={"bodyLarge"}>no card available for display 😔</Text>
+        </View>
+      )}
+      {(collectionData?.cards?.length ?? 0) > 0 && (
         <View>
           <View style={tw`p-4 bg-white shadow-md rounded-md mb-4`}>
             <Text style={tw`text-xl font-bold`}>{collectionData?.title}</Text>
-            <Text style={tw`text-base text-gray-600`}>
-              description{collectionData?.description}
+            <Text variant={"bodyLarge"} style={tw`text-base text-gray-600`}>
+              description: {collectionData?.description}
             </Text>
-            <Text style={tw`text-base text-gray-600`}>
-              category: {collectionData?.cards.length}
-              {collectionData?.category}
+            <Text variant={"bodyLarge"} style={tw`text-base text-gray-600`}>
+              category: {collectionData?.category}
             </Text>
-            <Text style={tw`text-base text-gray-600`}>
-              visibility:
-              {collectionData?.visibility}
+            <Text variant={"bodyLarge"} style={tw`text-base text-gray-600`}>
+              visibility: {collectionData?.visibility}
             </Text>
-            <Text style={tw`text-base text-gray-600`}>
+            <Text variant={"bodyLarge"} style={tw`text-base text-gray-600`}>
               Number of Cards: {collectionData?.cards.length}
             </Text>
-            <Text style={tw`text-base text-gray-600`}>
+            <Text variant={"bodyLarge"} style={tw`text-base text-gray-600`}>
               Number of likes: {collectionData?.likes.length}
             </Text>
           </View>
@@ -112,6 +118,9 @@ const Cards: FC<Props> = (props) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
+    flex: 1,
+    minWidth: 350,
+    minHeight: 500,
   },
   heading: {
     width: "45%",

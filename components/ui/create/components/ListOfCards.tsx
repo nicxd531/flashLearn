@@ -117,8 +117,8 @@ const ListOfCards: React.FC<ListOfCardsProps> = ({
           showsVerticalScrollIndicator={false} // Remove vertical scroll bar
         />
       ) : (
-        <View style={[tw`justify-center items-center h-full`, { flex: 1 }]}>
-          <Text variant={"bodyLarge"}>no question or answers added 😔</Text>
+        <View style={[tw`justify-center items-center h-64`, { flex: 1 }]}>
+          <Text variant={"bodyLarge"}>No questions or answers added 😔</Text>
         </View>
       )}
     </View>

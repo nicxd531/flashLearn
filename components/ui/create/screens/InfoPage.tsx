@@ -27,7 +27,7 @@ interface Props {
 }
 
 const InfoPage: FC<Props> = (props) => {
-  const { busyACollection } = useSelector(
+  const { busyACollection, collectionId } = useSelector(
     (state: RootState) => state.collection
   );
   const dispatch = useDispatch();
@@ -85,25 +85,17 @@ const InfoPage: FC<Props> = (props) => {
         throw new Error(`Server error: ${response.status}`);
       }
       const data = await response.data;
-      toast.success("Collection Created 🎉🎊");
+      toast.success("Collection Created ", { icon: "🎉🎊" });
       dispatch(updateCollectionId(data.collection.collectionId));
-      // console.log("Response data:", data);
       props.setActive((p: number) => p + 1);
     } catch (error) {
-      // console.error("Error during submission:", error);
       if (error instanceof yup.ValidationError) {
-        // console.log("Validation error:", error.message);
         toast.error(error.message + ""), { icon: "❌" };
       } else if (axios.isAxiosError(error)) {
-        // console.error(
-        //   "Axios error:",
-        //   error.response?.data?.message || error.message
-        // );
         toast.error(error.response?.data?.message || error.message + "", {
           icon: "❌",
         });
       } else {
-        // console.log("Unexpected error:", (error as Error).message || error);
         toast.error((error as Error).message || error + "", { icon: "❌" });
       }
     } finally {
@@ -114,6 +106,78 @@ const InfoPage: FC<Props> = (props) => {
     setCollectionInfo({ ...collectionInfo, visibility });
   }, [checked]);
 
+  const handleUpdateCollection = async () => {
+    dispatch(updateBusyStateCollection(true));
+    try {
+      const finalData = await collectionInfoSchema.validate(collectionInfo);
+      const { category, title, description } = finalData;
+      const token = await getFromAsyncStorage(Keys.AUTH_TOKEN);
+      if (!token) {
+        throw new Error("User is not authenticated. Token is missing.");
+      }
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      if (category) {
+        formData.append("category", category);
+      } else {
+        console.error("Category is missing or undefined");
+      }
+      formData.append("visibility", visibility);
+      if (
+        finalData.poster?.uri &&
+        finalData.poster?.name &&
+        finalData.poster?.type
+      ) {
+        formData.append("poster", {
+          uri: finalData.poster.uri,
+          name: finalData.poster.name,
+          type: finalData.poster.type,
+        } as any); // Cast to any to avoid type errors
+      } else {
+        console.error("Poster is missing or incomplete");
+      }
+      const response = await client.patch(
+        `/collection/${collectionId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // Include your auth token if required
+          },
+        }
+      );
+
+      if (response.status !== 201) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      toast.success("Collection Updated ", { icon: "🎉🎊" });
+      console.log("Success:", response.data);
+      props.setActive((p: number) => p + 1);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Error updating collection:",
+          error.response?.data || error.message
+        );
+        toast.error(
+          `Failed to update collection: ${
+            error.response?.data?.message || error.message
+          }`,
+          { icon: "❌" }
+        );
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error(
+          `Unexpected error: ${(error as Error).message || error + ""}`,
+          { icon: "❌" }
+        );
+      }
+    } finally {
+      dispatch(updateBusyStateCollection(false));
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={[styles.heading]}>
@@ -159,12 +223,12 @@ const InfoPage: FC<Props> = (props) => {
       <View style={[{ width: "60%", marginHorizontal: "auto" }, tw`mt-5`]}>
         <BtnRNPIcon
           busyACollection={busyACollection}
-          handleSubmit={handleSubmit}
-          title="Save Collection"
+          handleSubmit={collectionId ? handleUpdateCollection : handleSubmit}
+          title={collectionId ? "update collection" : "Save Collection"}
           iconName="save"
         />
       </View>
-      <View style={{ height: 150 }} />
+      <View style={{ height: 550 }} />
     </View>
   );
 };

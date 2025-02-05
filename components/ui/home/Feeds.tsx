@@ -15,8 +15,12 @@ import {
   TouchableRipple,
 } from "react-native-paper";
 import FeedsBtn from "./FeedsBtn";
-
+import tw from "twrnc";
+import TopNavFeeds from "./TopNavFeeds";
 const { width } = Dimensions.get("window");
+import { ActivityIndicator } from "react-native";
+import { Image } from "react-native-elements";
+import FeedDetails from "./FeedDetails";
 
 const Feeds: FC<{
   image: string;
@@ -26,25 +30,29 @@ const Feeds: FC<{
   time: string;
 }> = ({ image, avatar, name, info, time }) => {
   return (
-    <View style={{ borderRadius: 50, overflow: "hidden", height: 500 }}>
-      <TouchableRipple
-        style={styles.feedItem}
-        rippleColor="rgba(0, 0, 0, .32)"
-      >
-        <ImageBackground source={{ uri: image }} style={styles.imageBackground}>
-          <View style={styles.overlay}>
-            <View style={styles.userInfo}>
-              <Avatar.Image size={40} source={{ uri: avatar }} />
-              <View style={styles.userDetails}>
-                <Text style={styles.userName}>{name}</Text>
-                <Text style={styles.userTimeText}>{time}</Text>
-              </View>
-            </View>
-            <Text style={styles.userInfoText}>{info}</Text>
-          </View>
-        </ImageBackground>
-      </TouchableRipple>
-      <FeedsBtn />
+    <View
+      style={[
+        tw`mb-5 flex-column justify-between  p-4`,
+        {
+          borderRadius: 30,
+          overflow: "hidden",
+          height: 450,
+          backgroundColor: "rgba(224, 224, 224, 0.7)", // Set the background color with opacity
+        },
+      ]}
+    >
+      <TopNavFeeds avatar={avatar} name={name} time={time} />
+      <View>
+        <View style={styles.item}>
+          <Image
+            style={{ width: 350, height: 200, borderRadius: 8 }}
+            source={{ uri: image }}
+            PlaceholderContent={<ActivityIndicator />}
+          />
+        </View>
+      </View>
+
+      <FeedDetails name={name} likes={5} description={info} />
     </View>
   );
 };
@@ -54,7 +62,7 @@ const styles = StyleSheet.create({
     width: width * 0.9, // Adjust width as needed
     height: 500, // Adjust height as needed
     marginVertical: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "#f9f9f9",
   },
@@ -71,23 +79,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  userDetails: {
-    marginLeft: 10,
-  },
-  userName: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  userInfoText: {
-    color: "#fff",
-    fontSize: 14,
-    marginLeft: 30,
-  },
-  userTimeText: {
-    color: "#fff",
-    fontSize: 14,
-  },
+
   actions: {
     top: 100,
     right: 0,
@@ -99,6 +91,10 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     marginHorizontal: 5,
+  },
+  item: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

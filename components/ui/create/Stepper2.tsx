@@ -8,6 +8,8 @@ import Cards from "./screens/Cards";
 import { categories } from "@/utils/Categories";
 import * as yup from "yup";
 import { defaultForm } from "@/@types/reuseables";
+import { useDispatch } from "react-redux";
+import { updateCollectionId } from "@/utils/store/Collection";
 
 const Stepper2 = () => {
   const [collectionInfo, setCollectionInfo] = React.useState({
@@ -23,6 +25,7 @@ const Stepper2 = () => {
       uri: yup.string().required("collection poster is missing!"),
     }),
   });
+  const dispatch = useDispatch();
   const content = [
     <InfoPage
       collectionInfo={collectionInfo}
@@ -31,6 +34,13 @@ const Stepper2 = () => {
     />,
     <Cards />,
   ];
+  const handleFinish = () => {
+    setActive((p) => p - 1);
+    setCollectionInfo({
+      ...defaultForm,
+    });
+    dispatch(updateCollectionId(""));
+  };
 
   return (
     <View style={{ marginVertical: 20, flex: 1 }}>
@@ -53,7 +63,7 @@ const Stepper2 = () => {
         content={content}
         onNext={() => setActive((p) => p + 1)}
         onBack={() => setActive((p) => p - 1)}
-        onFinish={() => Alert.alert("Finish")}
+        onFinish={handleFinish}
       />
     </View>
   );

@@ -3,13 +3,17 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import Feeds from "../Feeds";
 
 interface Props {}
+const advert1 = require("../../../../assets/images/advert1.jpg");
+const advert2 = require("../../../../assets/images/advert2.jpg");
+const advert3 = require("../../../../assets/images/advert3.jpg");
 
 const data = [
   {
     id: 1,
     image:
-      "https://images.pexels.com/photos/2765586/pexels-photo-2765586.jpeg?dpr=1",
-    avatar: "https://example.com/avatar1.jpg",
+      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    avatar:
+      "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
     name: "John Doe",
     time: "2 hours ago",
     info: "cards for technology ",
@@ -17,8 +21,9 @@ const data = [
   {
     id: 2,
     image:
-      "https://images.pexels.com/photos/2765586/pexels-photo-2765586.jpeg?dpr=1",
-    avatar: "https://example.com/avatar2.jpg",
+      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    avatar:
+      "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
     name: "Jane Smith",
     time: "3 hours ago",
     info: "cards for technology ",

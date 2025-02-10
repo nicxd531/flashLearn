@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
+import { GestureResponderEvent } from "react-native";
 import {
   ImageBackground,
   StyleSheet,
@@ -28,7 +29,8 @@ const Feeds: FC<{
   name: string;
   info: string;
   time: string;
-}> = ({ image, avatar, name, info, time }) => {
+  onOpen: (event: GestureResponderEvent) => void;
+}> = ({ image, avatar, name, info, time, onOpen }) => {
   return (
     <View
       style={[
@@ -42,17 +44,15 @@ const Feeds: FC<{
       ]}
     >
       <TopNavFeeds avatar={avatar} name={name} time={time} />
-      <View>
-        <View style={styles.item}>
-          <Image
-            style={{ width: 350, height: 200, borderRadius: 8 }}
-            source={{ uri: image }}
-            PlaceholderContent={<ActivityIndicator />}
-          />
-        </View>
+      <View style={styles.item}>
+        <Image
+          style={{ width: 350, height: 200, borderRadius: 8 }}
+          source={{ uri: image }}
+          PlaceholderContent={<ActivityIndicator />}
+        />
       </View>
 
-      <FeedDetails name={name} likes={5} description={info} />
+      <FeedDetails onOpen={onOpen} name={name} likes={5} description={info} />
     </View>
   );
 };
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
   actions: {
     top: 100,
     right: 0,
-    flexDirection: "column",
     justifyContent: "space-around",
     position: "absolute",
     backgroundColor: "grey",

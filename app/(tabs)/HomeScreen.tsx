@@ -1,12 +1,25 @@
-import React, { useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import React, { useRef, useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  GestureResponderEvent,
+} from "react-native";
 import TopCreators from "@/components/ui/home/TopCreators";
 import PillToggleButton from "@/components/ui/home/PillToggleButton";
 import DiscoverScreen from "@/components/ui/home/screens/DiscoverScreen";
 import ExploreScreen from "@/components/ui/home/screens/ExploreScreen";
 import TopAppBar from "@/components/ui/home/TopAppBar";
+import { Modalize } from "react-native-modalize";
+import FeedsModal from "@/components/ui/home/FeedsModal";
 
 const HomeScreen: React.FC = () => {
+  const modalizeRef = useRef<Modalize>(null);
+  const onOpen = (event: GestureResponderEvent) => {
+    event.persist(); // Prevent React from reusing the event object
+    modalizeRef.current?.open();
+  };
   const [activeScreen, setActiveScreen] = useState<"Explore" | "Discover">(
     "Explore"
   );
@@ -24,7 +37,12 @@ const HomeScreen: React.FC = () => {
           />
         </View>
         {/* Add other scrollable components here */}
-        {activeScreen === "Explore" ? <ExploreScreen /> : <DiscoverScreen />}
+        {activeScreen === "Explore" ? (
+          <ExploreScreen />
+        ) : (
+          <DiscoverScreen onOpen={onOpen} />
+        )}
+        <FeedsModal modalizeRef={modalizeRef} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -2,10 +2,11 @@ import React from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import Feeds from "../Feeds";
 
-interface Props {}
-const advert1 = require("../../../../assets/images/advert1.jpg");
-const advert2 = require("../../../../assets/images/advert2.jpg");
-const advert3 = require("../../../../assets/images/advert3.jpg");
+import { GestureResponderEvent } from "react-native";
+
+interface Props {
+  onOpen: (event: GestureResponderEvent) => void;
+}
 
 const data = [
   {
@@ -28,12 +29,24 @@ const data = [
     time: "3 hours ago",
     info: "cards for technology ",
   },
+  {
+    id: 3,
+    image:
+      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    avatar:
+      "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
+    name: "Jane Smith",
+    time: "3 hours ago",
+    info: "cards for technology ",
+  },
   // Add more items as needed
 ];
 
 const DiscoverScreen: React.FC<Props> = (props) => {
+  const { onOpen } = props;
   const renderItem = ({ item }: { item: (typeof data)[0] }) => (
     <Feeds
+      onOpen={onOpen}
       image={item.image}
       avatar={item.avatar}
       name={item.name}

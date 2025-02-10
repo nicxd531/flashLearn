@@ -18,14 +18,13 @@ const FullCardComp: FC<Props> = (props) => {
   const { stackStyle, currentIndex, setCurrentIndex, data, progress } = props;
   return data ? (
     <>
-      <View style={tw`flex-1`}>
-        <CardsSlider
-          stackStyle={stackStyle}
-          currentIndex={currentIndex}
-          setCurrentIndex={setCurrentIndex}
-          data={data}
-        />
-      </View>
+      <CardsSlider
+        stackStyle={stackStyle}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+        data={data}
+      />
+
       <View
         style={tw`flex-row justify-center items-center w-full m-auto mt-10 flex-col`}
       >

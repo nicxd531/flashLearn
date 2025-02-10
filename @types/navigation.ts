@@ -11,4 +11,5 @@ export type AuthStackParamList = {
   HomeLayout: undefined;
   LostPassword: undefined;
   Verification: { userInfo: NewUserResponse };
+  CollectionPlay: undefined;
 };

@@ -3,17 +3,20 @@ import { StyleSheet, View } from "react-native";
 import FeedsBtn from "./FeedsBtn";
 import { Text } from "react-native-paper";
 import tw from "twrnc";
+import { GestureResponderEvent } from "react-native";
+
 interface Props {
   name: string;
   likes: number;
   description: string;
+  onOpen: (event: GestureResponderEvent) => void;
 }
 
 const FeedDetails: FC<Props> = (props) => {
-  const { name, likes, description } = props;
+  const { name, likes, description, onOpen } = props;
   return (
     <View style={styles.container}>
-      <FeedsBtn />
+      <FeedsBtn onOpen={onOpen} />
       <View>
         <Text variant="titleMedium">{likes} likes</Text>
       </View>

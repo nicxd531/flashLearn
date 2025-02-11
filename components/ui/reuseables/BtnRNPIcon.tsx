@@ -19,6 +19,7 @@ const BtnRNPIcon: React.FC<BtnRNPIconProps> = ({
 }) => {
   return (
     <TouchableOpacity
+      disabled={busyACollection}
       onPress={handleSubmit}
       style={[styles.container, styles.pillButton]}
     >

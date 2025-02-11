@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import FlipCard from "react-native-flip-card";
-import { Text, Button } from "react-native-paper";
+import { Text, Button, IconButton } from "react-native-paper";
 import Carousel from "react-native-snap-carousel";
 import tw from "twrnc";
 import TypeWriter from "react-native-typewriter";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   stackStyle: string;
@@ -24,7 +25,7 @@ interface Props {
   }[];
 }
 
-const CardsSlider: FC<Props> = (props) => {
+const CollectionSlider: FC<Props> = (props) => {
   const advert1 = require("../../../assets/images/cardCover.jpg");
   const advert2 = require("../../../assets/images/cardCover2.jpg");
 
@@ -63,7 +64,7 @@ const CardsSlider: FC<Props> = (props) => {
               source={advert1}
             />
             <View
-              style={tw`absolute inset-0 justify-center items-center p-4 bg-black bg-opacity-50`}
+              style={tw`absolute inset-0 justify-center items-center bg-black bg-opacity-50 h-full`}
             >
               <Text style={tw`text-white text-lg text-center`}>
                 {item.question}
@@ -77,21 +78,43 @@ const CardsSlider: FC<Props> = (props) => {
               source={advert2}
             />
             <View
-              style={tw`absolute inset-0 justify-center items-center p-4 bg-black bg-opacity-50`}
+              style={tw`absolute inset-0 justify-center items-center p-4 bg-white bg-opacity-40`}
             >
               {isFlipped ? (
-                <TypeWriter
-                  typing={1}
-                  minDelay={10}
-                  maxDelay={100}
-                  style={tw`text-white text-lg text-center`}
-                >
-                  {item.answer}
-                </TypeWriter>
+                <View>
+                  <TypeWriter
+                    typing={1}
+                    minDelay={10}
+                    maxDelay={100}
+                    style={tw`text-black text-lg text-center font-bold`}
+                  >
+                    {item.answer}
+                  </TypeWriter>
+                  <View style={tw`flex-row mt-4 `}>
+                    <IconButton
+                      icon={() => (
+                        <MaterialIcons
+                          name="check-circle"
+                          size={35}
+                          color="green"
+                        />
+                      )}
+                      onPress={() => console.log("Correct")}
+                    />
+                    <IconButton
+                      icon={() => (
+                        <MaterialIcons name="cancel" size={35} color="red" />
+                      )}
+                      onPress={() => console.log("Incorrect")}
+                    />
+                  </View>
+                </View>
               ) : (
-                <Text style={tw`text-white text-lg text-center`}>
-                  {item.answer}
-                </Text>
+                <View>
+                  <Text style={tw`text-white text-lg text-center`}>
+                    {item.answer}
+                  </Text>
+                </View>
               )}
             </View>
           </View>
@@ -125,25 +148,23 @@ const CardsSlider: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    minWidth: 300,
+    minHeight: 500,
     justifyContent: "center",
     alignItems: "center",
   },
   item: {
+    width: 300,
+    height: 450,
     justifyContent: "center",
     alignItems: "center",
   },
-  flipCard: {
-    width: 300,
-    height: 400,
-  },
+  flipCard: {},
   card: {
-    width: 300,
-    height: 400,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },
 });
 
-export default CardsSlider;
+export default CollectionSlider;

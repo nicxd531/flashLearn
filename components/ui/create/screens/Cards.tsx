@@ -20,7 +20,13 @@ interface Props {}
 
 const Cards: FC<Props> = (props) => {
   const { collectionId, busyAQuestion, collectionData } = useSelector(
-    (state: RootState) => state.collection
+    (state: {
+      collection: {
+        collectionId: string;
+        busyAQuestion: boolean;
+        collectionData: any;
+      };
+    }) => state.collection
   );
   const [stackStyle, setStackStyle] = React.useState("default");
   const [visible, setVisible] = React.useState(false);
@@ -42,8 +48,11 @@ const Cards: FC<Props> = (props) => {
     if (totalCards === 0) return 0; // Avoid division by zero
     return currentCardIndex / totalCards;
   };
-  const progress = calculateProgress(currentIndex + 1, data.length);
-  // console.log({ collectionData });
+  const progress = calculateProgress(
+    currentIndex + 1,
+    collectionData?.cards.length
+  );
+  // console.log(collectionData.cards.length);
   return (
     <View style={styles.container}>
       <View style={[styles.heading]}>

@@ -23,7 +23,7 @@ import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
 import client from "@/components/api/client";
 import React, { useEffect, useState } from "react";
 import { RootState } from "@/utils/store";
-import CollectionPlay from "@/components/ui/collection/CollectionPlay";
+import CollectionPlay from "./(tabs)/CollectionPlay";
 
 const AuthNavigator = () => {
   const { loggedIn, busy } = useSelector(

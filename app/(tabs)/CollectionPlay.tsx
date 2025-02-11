@@ -1,25 +1,29 @@
 import React, { FC, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
-import FullCardComp from "../create/components/FullCardComp";
+import FullCardComp from "../../components/ui/create/components/FullCardComp";
 import { useSelector } from "react-redux";
+import { RootState } from "@/utils/store";
 import tw from "twrnc";
+import CollectionCards from "@/components/ui/reuseables/CollectionCards";
+import ToggleBtn from "@/components/ui/create/components/ToggleBtn";
 
 interface Props {}
 
 const CollectionPlay: FC<Props> = (props) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const advert1 = require("../../../assets/images/advert1.jpg");
-  const advert2 = require("../../../assets/images/advert2.jpg");
-  const advert3 = require("../../../assets/images/advert3.jpg");
-  const data = [
-    { title: "Item 1", image: advert1 },
-    { title: "Item 2", image: advert2 },
-    { title: "Item 3", image: advert3 },
-  ];
   const { collectionId, busyAQuestion, collectionData } = useSelector(
-    (state: RootState) => state.collection
+    (state: {
+      collection: {
+        collectionId: string;
+        busyAQuestion: boolean;
+        collectionData: any;
+      };
+    }) => state.collection
   );
+  const [stackStyle, setStackStyle] = React.useState("default");
+  const [visible, setVisible] = React.useState(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
   const calculateProgress = (
     currentCardIndex: number,
     totalCards: number
@@ -27,18 +31,24 @@ const CollectionPlay: FC<Props> = (props) => {
     if (totalCards === 0) return 0; // Avoid division by zero
     return currentCardIndex / totalCards;
   };
-  const [stackStyle, setStackStyle] = React.useState("default");
-  const [visible, setVisible] = React.useState(false);
-  const progress = calculateProgress(currentIndex + 1, data.length);
+  const progress = calculateProgress(
+    currentIndex + 1,
+    collectionData?.cards.length
+  );
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
+      <Text style={[tw`font-bold mt-4 mb-5`]} variant={"titleLarge"}>
+        Collection Names
+      </Text>
+      <ToggleBtn setStackStyle={setStackStyle} stackStyle={stackStyle} />
       {(collectionData?.cards?.length ?? 0) > 0 ? (
-        <FullCardComp
+        <CollectionCards
           stackStyle={stackStyle}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
           data={
-            Array.isArray(collectionData?.cards) ? collectionData.cards : []
+            Array.isArray(collectionData?.cards) ? collectionData?.cards : []
           }
           progress={progress}
         />
@@ -57,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 350,
     minHeight: 500,
-    paddingTop: 60,
+    paddingBottom: 50,
   },
 });
 
